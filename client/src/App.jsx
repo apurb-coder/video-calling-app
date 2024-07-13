@@ -8,7 +8,7 @@ const App = () => {
     <div>
       <Top/>
       {/* <VideoStream/> */}
-      {/* <Chat/> */}
+      <Chat/>
     </div>
   );
 }
