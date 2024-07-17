@@ -23,6 +23,16 @@ const Rooms = {};
 const server = http.createServer(app);
 // Create a Socket.IO server and attach it to the HTTP server
 const io = new Server(server);
+
+// endpoint to get all active users in a room, Required data from front-end side: roomId 
+app.get('/getActiveUsers',(req, res) =>{
+  const room_id = req.params.room; // send in params from front-end side
+  if(Rooms[room_id]){
+    res.json(Rooms[room_id].Active_users)
+  }else{
+    res.status(404).json({message: "Room not found"})
+  }
+})
 //socket.io implementation
 io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
