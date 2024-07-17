@@ -6,8 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // to store data of users
-// Const Users= [Username:{username:test,personal_room_id:84274}]
-const Users = [];
+// Const Users= {socketId:{username:test,SocketId:84274,roomId:472384}}
+const Users = {};
 // Room data
 /* Rooms = {
     room_id:{
@@ -27,15 +27,17 @@ const io = new Server(server);
 io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
-  Users.push({ socketId: socket.id });
+  Users[socket.id] = { socketId: socket.id };
   // diconnect method
   socket.on("disconnect", () => {
     console.log(`User Disconnected:${socket.id}`);
-    // splice method is used to remove elements from the array
-    Users.splice(
-      Users.findIndex((user) => user.socketId === socket.id),
-      1
-    );
+    // delete user from the Users object
+    delete Users[socket.id]
+    delete Rooms[Users[socket.id].roomId].Active_users[
+      Rooms[Users[socket.id].roomId].Active_users.indexOf(
+        Users[socket.id].username
+      )
+    ];
   });
   // remove username from room  
   socket.on("leaveRoom", ({ username, room_id }) => {
@@ -51,16 +53,23 @@ io.on("connection", (socket) => {
     const room_id = Math.floor(Math.random() * 100000);
     socket.join(room_id);
     console.log(`${username} created room ${room_id}`);
+    // save user in the room object
     Rooms[room_id] = {
       Active_users: [username],
       Room_topic: room_topic,
     };
+    // save user in the Users object with roomId
+    Users[socket.id] = {...Users[socket.id],username: username, roomId: room_id};
     io.to(room_id).emit("message", { username: `${username} created` });
   });
   // join an existing room method
   socket.on("joinRoom", ({ username, room_id }) => {
     socket.join(room_id);
     console.log(`${username} joined room ${room_id}`);
+    // save user in the room object
+    Rooms[room_id].Active_users.push(username);
+    // save user in the Users object with roomId
+    Users[socket.id]= {...Users[socket.id], username: username , roomId: room_id}
     io.to(room_id).emit("message", { username: `${username} joined` });
   });
   // send message to the room
