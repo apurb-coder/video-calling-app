@@ -29,13 +29,32 @@ const Chat = () => {
           dfd
         </div>
       </div>
-      { isEmojiOpen ? <EmojiPicker className="ml-16" onEmojiClick={handleEmojiClick}/> : <></>}
+      <div className="absolute bottom-20 z-10">
+        {isEmojiOpen ? (
+          <EmojiPicker className="ml-16" onEmojiClick={handleEmojiClick} />
+        ) : (
+          <></>
+        )}
+      </div>
       <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
         <div className="relative flex w-[24rem] bg-white px-5 rounded-full py-3 items-center space-x-2">
-          <textarea onChange={(e)=> setInputText(e.target.value)} value={inputText} className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none" />
+          <textarea
+            onChange={(e) => setInputText(e.target.value)}
+            value={inputText}
+            className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none"
+          />
           <img src={send_logo} alt="send_logo" className="w-6 cursor-pointer" />
-          <img src={fileSendLogo} alt="send_logo" className="w-6 cursor-pointer" />
-          <img src={SmilyIcon} alt="send_logo" className="w-6 cursor-pointer" onClick={toggleEmojiPicker} />
+          <img
+            src={fileSendLogo}
+            alt="send_logo"
+            className="w-6 cursor-pointer"
+          />
+          <img
+            src={SmilyIcon}
+            alt="send_logo"
+            className="w-6 cursor-pointer"
+            onClick={toggleEmojiPicker}
+          />
         </div>
       </div>
     </div>
