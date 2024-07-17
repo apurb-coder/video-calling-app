@@ -4,7 +4,7 @@ import send_logo from "../assets/Group 237540.svg";
 
 const Chat = () => {
   return (
-    <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-screen flex flex-col">
+    <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
       <div className="p-4 flex space-x-5 items-center bg-white">
         <p className="font-medium">Participants</p>
         <div className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-3 px-4 rounded-full space-x-1">
