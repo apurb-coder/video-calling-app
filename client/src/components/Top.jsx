@@ -35,7 +35,7 @@ const Top = () => {
       </div>
       <div className="p-4 bg-[#DFEBFF] text-[#0060FF] m-4 px-8 rounded-full text-sm flex space-x-1">
         <img src={LinkLogo} alt="Link logo" className="w-6 font-bold" />
-        <p>| Link-Copy</p>
+        <p>| Room-Id</p>
       </div>
     </div>
   );

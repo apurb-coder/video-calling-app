@@ -1,14 +1,15 @@
 import React from 'react'
-import Top from './components/Top';
-import VideoStream from './components/VideoStream';
-import Chat from './components/Chat';
+import VideoCallingUi from './pages/VideoCallingUi';
+import JoinRoom from './pages/JoinRoom';
+
 
 const App = () => {
   return (
-    <div>
-      <Top/>
-      {/* <VideoStream/> */}
-      <Chat/>
+    <div className="min-h-screen">
+      {/* TODO: This will also be conditional rendering , will only render when user doesn't exist */}
+      {/* <JoinRoom/> */}
+      {/* TODO: This will be a conditional rendering, it will only render if user exist */}
+      <VideoCallingUi />
     </div>
   );
 }
