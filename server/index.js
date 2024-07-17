@@ -33,6 +33,7 @@ app.get('/getActiveUsers',(req, res) =>{
     res.status(404).json({message: "Room not found"})
   }
 })
+
 //socket.io implementation
 io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
@@ -99,7 +100,9 @@ io.on("connection", (socket) => {
       });
     }
   });
-  
+
+  // TODO: mute State change : implement io.on('muteStateChange')
+  // TODO: video State change : implement io.on('videoStateChange')
 });
 server.listen(PORT, (error) => {
   try {
