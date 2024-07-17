@@ -101,7 +101,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  // TODO: mute State change : implement io.on('muteStateChange')
+  // TODO: audio State change : implement io.on('audioStateChange')
+
   // TODO: video State change : implement io.on('videoStateChange')
 });
 server.listen(PORT, (error) => {
