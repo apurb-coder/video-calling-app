@@ -64,6 +64,22 @@ io.on("connection", (socket) => {
     io.to(room_id).emit("message", { username: `${username} joined` });
   });
   // send message to the room
+  socket.on("send", (message) => {
+    if (message.type == "text") {
+      socket.broadcast.emit("message", {
+        name: users[socket.id],
+        message: message.msg,
+        type: "text",
+      });
+    }
+    if (message.type == "file") {
+      socket.broadcast.emit("message", {
+        name: users[socket.id],
+        url: message.url,
+        type: "file",
+      });
+    }
+  });
   
 });
 server.listen(PORT, (error) => {
