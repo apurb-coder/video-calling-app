@@ -76,14 +76,14 @@ io.on("connection", (socket) => {
   socket.on("send", (message) => {
     if (message.type == "text") {
       socket.broadcast.emit("message", {
-        name: users[socket.id],
+        name: Users[socket.id].username,
         message: message.msg,
         type: "text",
       });
     }
     if (message.type == "file") {
       socket.broadcast.emit("message", {
-        name: users[socket.id],
+        name: Users[socket.id].username,
         url: message.url,
         type: "file",
       });
