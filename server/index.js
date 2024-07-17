@@ -84,14 +84,14 @@ io.on("connection", (socket) => {
   });
   // send message to the room
   socket.on("send", (message) => {
-    if (message.type == "text") {
+    if (message.type === "text") {
       socket.broadcast.emit("message", {
         name: Users[socket.id].username,
         message: message.msg,
         type: "text",
       });
     }
-    if (message.type == "file") {
+    if (message.type === "file") {
       socket.broadcast.emit("message", {
         name: Users[socket.id].username,
         url: message.url,
