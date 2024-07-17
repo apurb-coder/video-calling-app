@@ -18,8 +18,8 @@ const Chat = () => {
           dfd
         </div>
       </div>
-      <div className="p-4 items-center bg-white flex justify-center">
-        <div className="flex w-[24rem] bg-[#F6F6F6] px-5 rounded-full py-5 items-center">
+      <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
+        <div className="flex w-[24rem] bg-white px-5 rounded-full py-5 items-center">
           <p className="text-[#8D8F98] font-semibold text-sm flex-grow">
             Type something...
           </p>
