@@ -1,8 +1,11 @@
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
+import cors from "cors";
 
 const app = express();
+app.use(express.json());
+app.use(cors());
 const PORT = process.env.PORT || 8000;
 
 // to store data of users
