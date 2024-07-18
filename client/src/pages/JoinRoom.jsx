@@ -1,5 +1,6 @@
 import React from 'react'
 import Logo from "../assets/Mask group.svg";
+import { Routes, Route } from "react-router-dom";
 
 const JoinRoom = () => {
   return (
@@ -10,6 +11,8 @@ const JoinRoom = () => {
           <img src={Logo} alt="logo" />
           <h3 className=" font-semibold text-2xl">ConnectDots</h3>
         </div>
+        {/* TODO: implement conditional rendering */}
+        {/* Two Buttons */}
         <div className='space-x-6'>
           <button className=" py-2 px-5 bg-[#0060FF] rounded-md text-white">
             Create New Room
