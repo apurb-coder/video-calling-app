@@ -1,15 +1,17 @@
 import React from 'react'
 import VideoCallingUi from './pages/VideoCallingUi';
+import { Routes,Route } from 'react-router-dom';
 import JoinRoom from './pages/JoinRoom';
 
 
 const App = () => {
   return (
     <div>
-      {/* TODO: This will also be conditional rendering , will only render when user doesn't exist */}
-      {/* <JoinRoom/> */}
-      {/* TODO: This will be a conditional rendering, it will only render if user exist */}
-      <VideoCallingUi />
+      <Routes>
+        {/* useEffect(()=>{},[]) on 1st render check if user doesn't exist redirect it to join-page, if already exist redirect it to video-call page with room number */}
+        <Route path="/" element={<JoinRoom />} />
+        <Route path="/video-call/:roomId" element={<VideoCallingUi />} />
+      </Routes>
     </div>
   );
 }
