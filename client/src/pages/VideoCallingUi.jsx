@@ -10,6 +10,7 @@ const VideoCallingUi = () => {
       <div className="flex-grow flex items-center justify-between">
         <VideoStream className="flex-shrink-0" />
         <Chat className="flex-shrink-0" />
+        {/* TODO: Add Controls */}
       </div>
     </div>
   );
