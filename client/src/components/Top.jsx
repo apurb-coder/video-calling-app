@@ -22,7 +22,7 @@ const Top = () => {
       setCurrentDateTime(`${formattedDate} | ${formattedTime}`);
     };
 
-    const timer = setInterval(updateDateTime, 1000); // Update every 1 minute
+    const timer = setInterval(updateDateTime, 2000); // Update every 1 minute
 
     updateDateTime(); // Initial update
 
