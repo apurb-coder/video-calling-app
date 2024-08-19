@@ -3,6 +3,8 @@ import Top from "../components/Top";
 import VideoStream from "../components/VideoStream";
 import Chat from "../components/Chat";
 
+
+
 const VideoCallingUi = () => {
   return (
     <div className="flex flex-col h-screen">
@@ -10,7 +12,6 @@ const VideoCallingUi = () => {
       <div className="flex-grow flex items-center justify-between">
         <VideoStream className="flex-shrink-0" />
         <Chat className="flex-shrink-0" />
-        {/* TODO: Add Controls */}
       </div>
     </div>
   );

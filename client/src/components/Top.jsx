@@ -1,30 +1,42 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../assets/Mask group.svg";
 import LinkLogo from "../assets/link.svg";
-import profile_img from "../assets/profile_img.png"
+import profile_img from "../assets/profile_img.png";
 
 const Top = () => {
   const [currentDateTime, setCurrentDateTime] = useState("");
 
   useEffect(() => {
-    const date = new Date();
-    const options = { year: "numeric", month: "long" };
-    const formattedDate = `${date.toLocaleDateString(
-      "en-US",
-      options
-    )} ${getOrdinal(date.getDate())}`;
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-    setCurrentDateTime(`${formattedDate} | ${formattedTime}`);
+    const updateDateTime = () => {
+      const date = new Date();
+      const options = { year: "numeric", month: "long" };
+      const formattedDate = `${date.toLocaleDateString(
+        "en-US",
+        options
+      )} ${getOrdinal(date.getDate())}`;
+      const formattedTime = date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+      setCurrentDateTime(`${formattedDate} | ${formattedTime}`);
+    };
+
+    const timer = setInterval(updateDateTime, 60000); // Update every 1 minute
+
+    updateDateTime(); // Initial update
+
+    return () => {
+      clearInterval(timer); // Clean up when component unmounts
+    };
   }, []);
+
   const getOrdinal = (n) => {
     const s = ["th", "st", "nd", "rd"],
       v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   };
+
   return (
     <div className="flex justify-around">
       <div className="p-4">
