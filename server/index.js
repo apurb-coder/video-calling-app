@@ -115,15 +115,26 @@ io.on("connection", (socket) => {
       socket.emit("error", { message: "Room not found" });
       return;
     }
+
     socket.join(room_id);
     console.log(`${username} joined room ${room_id}`);
+
+    // Add the user to the active users list in the room
     Rooms[room_id].Active_users.push(username);
+
+    // Save the user in the Users object with the roomId
     Users[socket.id] = {
       ...Users[socket.id],
       username: username,
       roomId: room_id,
     };
-    io.to(room_id).emit("message", { username: `${username} joined` });
+
+    // Emit the "user-joined-meeting" event
+    io.to(room_id).emit("user-joined-meeting", {
+      username: username,
+      roomId: room_id,
+      userId: socket.id, // Add this so the client knows the ID
+    });
   });
 
   // send message to the room
