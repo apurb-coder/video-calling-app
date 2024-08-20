@@ -78,24 +78,38 @@ io.on("connection", (socket) => {
     socket.leave(room_id);
   });
   // Create a new Room
-  socket.on("createRoom", ({ username, room_topic }) => {
-    const room_id = Math.floor(Math.random() * 100000);
+  // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully 
+  socket.on("createRoom", ({ username, room_id, room_topic }) => {
     socket.join(room_id);
-    console.log(`${username} created room ${room_id}`);
-    // save user in the room object
-    Rooms[room_id] = {
-      Active_users: [username],
-      Room_topic: room_topic,
-    };
-    // save user in the Users object with roomId
+    console.log(`${username} joined or created room ${room_id}`);
+
+    // If the room doesn't exist, create it
+    if (!Rooms[room_id]) {
+      Rooms[room_id] = {
+        Active_users: [],
+        Room_topic: room_topic,
+      };
+    }
+
+    // Add the user to the active users list in the room
+    Rooms[room_id].Active_users.push(username);
+
+    // Save the user in the Users object with the roomId
     Users[socket.id] = {
       ...Users[socket.id],
       username: username,
       roomId: room_id,
     };
-    io.to(room_id).emit("message", { username: `${username} created` });
+
+    // Emit the "user-joined-meeting" event
+    io.to(room_id).emit("user-joined-meeting", {
+      username: username,
+      roomId: room_id,
+    });
   });
+
   // join an existing room method
+  // Functioning: emit an event joinRoom from client side -> server is listening to joinRoom event and it adds the user to the room -> emit user-joined-meet, to tell client user sucessfully 
   socket.on("joinRoom", ({ username, room_id }) => {
     if (!Rooms[room_id]) {
       socket.emit("error", { message: "Room not found" });
