@@ -107,6 +107,7 @@ io.on("connection", (socket) => {
 
     // Emit the "user-joined-meeting" event
     io.to(room_id).emit("user-joined-meeting", {
+      socketId: socket.id,
       username: username,
       roomId: room_id,
     });
@@ -135,9 +136,9 @@ io.on("connection", (socket) => {
 
     // Emit the "user-joined-meeting" event
     io.to(room_id).emit("user-joined-meeting", {
+      socketId: socket.id,
       username: username,
       roomId: room_id,
-      userId: socket.id, // Add this so the client knows the ID
     });
   });
 

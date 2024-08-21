@@ -18,6 +18,7 @@ export const AppContextProvider = ({ children }) => {
   const [topic, setTopic] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState("");
+  const [activeParticipants, setActiveParticipants] = useState([]);
   useEffect(() => {
     const getOrdinal = (n) => {
       const s = ["th", "st", "nd", "rd"],
@@ -48,6 +49,12 @@ export const AppContextProvider = ({ children }) => {
       clearInterval(timer); // Clean up when component unmounts
     };
   }, []);
+
+  // Function : fetch Active Participants list
+  const fetchActivePaticipants =() =>{
+    // TODO: Implement the logic to fetch active participants based on roomID
+    
+  }
   return (
     <AppContext.Provider
       value={{
@@ -61,6 +68,8 @@ export const AppContextProvider = ({ children }) => {
         setCurrentTime,
         currentDateTime,
         setCurrentDateTime,
+        activeParticipants,
+        setActiveParticipants,
       }}
     >
       {children}
