@@ -5,38 +5,8 @@ import { useAppContext } from "../context/AppContext.jsx";
 import profile_img from "../assets/profile_img.png";
 
 const Top = () => {
-  const [currentDateTime, setCurrentDateTime] = useState("");
-  const { currentTime, setCurrentTime } = useAppContext();
-  useEffect(() => {
-    const updateDateTime = () => {
-      const date = new Date();
-      const options = { year: "numeric", month: "long" };
-      const formattedDate = `${date.toLocaleDateString(
-        "en-US",
-        options
-      )} ${getOrdinal(date.getDate())}`;
-      const formattedTime = date.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      });
-      setCurrentDateTime(`${formattedDate} | ${formattedTime}`);
-      setCurrentTime(`${formattedTime}`)
-    };
+  const {currentDateTime} = useAppContext();
 
-    const timer = setInterval(updateDateTime, 2000); // Update every 1 minute
-
-    updateDateTime(); // Initial update
-
-    return () => {
-      clearInterval(timer); // Clean up when component unmounts
-    };
-  }, []);
-  const getOrdinal = (n) => {
-    const s = ["th", "st", "nd", "rd"],
-      v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
-  };
 
   return (
     <div className="flex justify-around">
