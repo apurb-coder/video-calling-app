@@ -5,6 +5,8 @@ import { useAppContext } from "../context/AppContext";
 
 // for handling multiple participnats in a video call
 const VideoGrid = () => {
+  // streams = { socket_ID1: { videoStream} , socket_ID2: { videoStream} , socket_ID3: { videoStream}}
+  const { streams, setStreams } = useAppContext();
   useEffect(() => {
     const myPeer = new Peer();
 
@@ -65,7 +67,6 @@ const VideoGrid = () => {
           }}
         ></video>
       ))} */}
-      
     </div>
   );
 };
