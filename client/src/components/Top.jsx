@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../assets/Mask group.svg";
 import LinkLogo from "../assets/link.svg";
+import { useAppContext } from "../context/AppContext.jsx";
 import profile_img from "../assets/profile_img.png";
 
 const Top = () => {
   const [currentDateTime, setCurrentDateTime] = useState("");
-
+  const { currentTime, setCurrentTime } = useAppContext();
   useEffect(() => {
     const updateDateTime = () => {
       const date = new Date();
@@ -30,7 +31,6 @@ const Top = () => {
       clearInterval(timer); // Clean up when component unmounts
     };
   }, []);
-
   const getOrdinal = (n) => {
     const s = ["th", "st", "nd", "rd"],
       v = n % 100;

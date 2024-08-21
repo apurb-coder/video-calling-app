@@ -16,5 +16,21 @@ export const AppContextProvider = ({ children }) => {
   const [streams, setStreams] = useState({});
   const [roomID, setRoomID] = useState("");
   const [topic, setTopic] = useState("");
-  return <AppContext.Provider value={{streams,setStreams,roomID,setRoomID,topic,setTopic}}>{children}</AppContext.Provider>;
+  const [currentTime, setCurrentTime] = useState("")
+  return (
+    <AppContext.Provider
+      value={{
+        streams,
+        setStreams,
+        roomID,
+        setRoomID,
+        topic,
+        setTopic,
+        currentTime,
+        setCurrentTime,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };

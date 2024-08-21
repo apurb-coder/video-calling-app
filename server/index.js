@@ -24,7 +24,11 @@ const Rooms = {};
 // Create an HTTP server using the Express app
 const server = http.createServer(app);
 // Create a Socket.IO server and attach it to the HTTP server
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // or specify allowed origins like "http://localhost:3000"
+  },
+});
 
 // endpoint to get all active users in a room, Required data from front-end side: roomId
 app.get("/getActiveUsers", (req, res) => {
@@ -78,7 +82,7 @@ io.on("connection", (socket) => {
     socket.leave(room_id);
   });
   // Create a new Room
-  // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully 
+  // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
     socket.join(room_id);
     console.log(`${username} joined or created room ${room_id}`);
@@ -109,7 +113,7 @@ io.on("connection", (socket) => {
   });
 
   // join an existing room method
-  // Functioning: emit an event joinRoom from client side -> server is listening to joinRoom event and it adds the user to the room -> emit user-joined-meet, to tell client user sucessfully 
+  // Functioning: emit an event joinRoom from client side -> server is listening to joinRoom event and it adds the user to the room -> emit user-joined-meet, to tell client user sucessfully
   socket.on("joinRoom", ({ username, room_id }) => {
     if (!Rooms[room_id]) {
       socket.emit("error", { message: "Room not found" });
