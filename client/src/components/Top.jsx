@@ -21,6 +21,7 @@ const Top = () => {
         hour12: true,
       });
       setCurrentDateTime(`${formattedDate} | ${formattedTime}`);
+      setCurrentTime(`${formattedTime}`)
     };
 
     const timer = setInterval(updateDateTime, 2000); // Update every 1 minute
