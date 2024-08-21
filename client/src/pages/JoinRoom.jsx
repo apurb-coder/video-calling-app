@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Logo from "../assets/Mask group.svg";
+import { useAppContext } from "../context/AppContext.jsx";
 import { v6 as uuidv6 } from "uuid"; // to generate a unique roomID
 
 const JoinRoom = () => {
+  const {roomID, setRoomID} = useAppContext();
+  const {topic, setTopic} = useAppContext();
   const [joinOption, setJoinOption] = useState("");
-  const [roomID, setRoomID] = useState("");
   const [username, setUsername] = useState("");
-  const [topic, setTopic] = useState("");
 
   const generateRandomRoomID = () =>{
     const randomRoomID = uuidv6();
