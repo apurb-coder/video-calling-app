@@ -1,5 +1,5 @@
 // Function: This file handles all states for the app. This file provides access of all states globally.
-import { createContext, useContext, useState,useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AppContext = createContext(null);
 
@@ -15,6 +15,7 @@ export const AppContextProvider = ({ children }) => {
   // TODO: Define All the states used in the App like room_id , user ID, participants list
   const [streams, setStreams] = useState({});
   const [roomID, setRoomID] = useState("");
+  const [username, setUsername] = useState("");
   const [topic, setTopic] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState("");
@@ -51,10 +52,9 @@ export const AppContextProvider = ({ children }) => {
   }, []);
 
   // Function : fetch Active Participants list
-  const fetchActivePaticipants =() =>{
+  const fetchActivePaticipants = () => {
     // TODO: Implement the logic to fetch active participants based on roomID
-    
-  }
+  };
   return (
     <AppContext.Provider
       value={{
@@ -62,6 +62,8 @@ export const AppContextProvider = ({ children }) => {
         setStreams,
         roomID,
         setRoomID,
+        username,
+        setUsername,
         topic,
         setTopic,
         currentTime,

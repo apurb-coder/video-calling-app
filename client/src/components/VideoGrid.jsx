@@ -6,9 +6,16 @@ import { useAppContext } from "../context/AppContext";
 // for handling multiple participnats in a video call
 const VideoGrid = () => {
   // streams = { socket_ID1: { videoStream} , socket_ID2: { videoStream} , socket_ID3: { videoStream}}
-  const { streams, setStreams } = useAppContext();
+  const { streams, setStreams, roomID, username } =
+    useAppContext();
   useEffect(() => {
-    const myPeer = new Peer();
+    const myPeer = new Peer({
+      config: {
+        iceServers: [
+          { url: "stun:stun.l.google.com:19302" }, // Google's STUN server
+        ],
+      },
+    });
 
     // Get local video stream
     navigator.mediaDevices
@@ -23,10 +30,10 @@ const VideoGrid = () => {
           // if someone is calling answer their calls with my videoStream
           call.answer(stream);
           // the person who called if sends his/her videoStream strore it somewhere
-          call.on("stream", (userStream) => {
+          call.on("stream", (remoteStream) => {
             setStreams((prevStreams) => ({
               ...prevStreams,
-              [call.peer]: userStream,
+              [call.peer]: remoteStream,
             }));
           });
         });
@@ -37,24 +44,24 @@ const VideoGrid = () => {
           // send my videoStream to the socketID who joined the meeting
           const call = myPeer.call(socketId, stream);
           // receive the videoStream of the user who I called .
-          call.on("stream", (userStream) => {
+          call.on("stream", (remoteStream) => {
             setStreams((prevStreams) => ({
               ...prevStreams,
-              [userId]: userStream,
+              [userId]: remoteStream,
             }));
           });
         });
       });
 
-    // Emit event when peer connection is open
-    myPeer.on("open", (id) => {
-      socket.emit("meeting", 8777, id);
+    // 'open' event: It will get triggered when the peer connection is successfully established and the peer's ID is assigned.
+    myPeer.on("open", (peerID) => {
+      socket.emit("joinRoom", {username:username,room_id:roomID,peerID});
     });
   }, []);
   return (
     <div className="h-[85%] flex flex-col justify-center items-center videoCallContainer">
       {/* Local video */}
-      {/* <video src="" autoPlay={true} muted={true} id="myVideo"></video> */}
+      <video src="" autoPlay={true} muted={true} id="myVideo"></video>
 
       {/* Render videos for each remote stream */}
       {/* {Object.keys(streams).map((userId) => (

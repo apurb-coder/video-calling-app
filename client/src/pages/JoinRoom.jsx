@@ -4,16 +4,16 @@ import { useAppContext } from "../context/AppContext.jsx";
 import { v6 as uuidv6 } from "uuid"; // to generate a unique roomID
 
 const JoinRoom = () => {
-  const {roomID, setRoomID} = useAppContext();
-  const {topic, setTopic} = useAppContext();
-  const [joinOption, setJoinOption] = useState("");
-  const [username, setUsername] = useState("");
+  const { roomID, setRoomID, topic, setTopic, username, setUsername } =
+    useAppContext();
 
-  const generateRandomRoomID = () =>{
+  const [joinOption, setJoinOption] = useState("");
+
+  const generateRandomRoomID = () => {
     const randomRoomID = uuidv6();
     setRoomID(randomRoomID);
     console.log(username);
-  }
+  };
   return (
     <div className="min-h-screen flex justify-center items-center">
       <div className="flex-col space-y-8">

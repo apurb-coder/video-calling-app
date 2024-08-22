@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
   Users[socket.id] = { socketId: socket.id };
-  // diconnect method
+  // disconnect method
   socket.on("disconnect", () => {
     console.log(`User Disconnected:${socket.id}`);
 

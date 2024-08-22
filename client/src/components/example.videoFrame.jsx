@@ -23,10 +23,10 @@ export default function VideoFrame({ socket }) {
           // if someone is calling answer their calls with my videoStream
           call.answer(stream);
           // the person who called if sends his/her videoStream strore it somewhere
-          call.on("stream", (userStream) => {
+          call.on("stream", (remoteStream) => {
             setStreams((prevStreams) => ({
               ...prevStreams,
-              [call.peer]: userStream,
+              [call.peer]: remoteStream,
             }));
           });
         });
@@ -37,10 +37,10 @@ export default function VideoFrame({ socket }) {
           // send my videoStream to the socketID who joined the meeting
           const call = myPeer.call(socketId, stream);
           // receive the videoStream of the user who I called .
-          call.on("stream", (userStream) => {
+          call.on("stream", (remoteStream) => {
             setStreams((prevStreams) => ({
               ...prevStreams,
-              [userId]: userStream,
+              [userId]: remoteStream,
             }));
           });
         });
