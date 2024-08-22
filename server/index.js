@@ -15,7 +15,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 8000;
 
 // to store data of users
-// Const Users= {socketId:{username:test,SocketId:84274,roomId:472384,peerId:dmwko-r3204}}
+// Const Users= {socketId:{username:test,SocketId:84274,roomId:472384}}
 const Users = {};
 // Room data
 /* Rooms = {
@@ -51,9 +51,6 @@ io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
   Users[socket.id] = { socketId: socket.id };
-  socket.on("connect_error", (err) => {
-    console.error("Connection Error:", err.message);
-  });
   // disconnect method
   socket.on("disconnect", () => {
     console.log(`User Disconnected:${socket.id}`);
@@ -90,9 +87,6 @@ io.on("connection", (socket) => {
     io.to(room_id).emit("message", { username: `${username} left` });
     socket.leave(room_id);
   });
-  socket.on("setPeerId", ({ peerId }) => {
-    Users[socket.id].peerId = peerId;
-  });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
@@ -118,10 +112,8 @@ io.on("connection", (socket) => {
     };
 
     // Emit the "user-joined-meeting" event
-    // Modify the "user-joined-meeting" emit to include peerId
     socket.broadcast.to(room_id).emit("user-joined-meeting", {
       socketId: socket.id,
-      peerId: Users[socket.id].peerId, // Add this line
       username: username,
       roomId: room_id,
     });
@@ -149,10 +141,8 @@ io.on("connection", (socket) => {
     };
 
     // Emit the "user-joined-meeting" event
-    // Modify the "user-joined-meeting" emit to include peerId
     socket.broadcast.to(room_id).emit("user-joined-meeting", {
       socketId: socket.id,
-      peerId: Users[socket.id].peerId, // Add this line
       username: username,
       roomId: room_id,
     });
