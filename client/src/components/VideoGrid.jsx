@@ -8,16 +8,15 @@ const VideoGrid = () => {
   // streams = { socket_ID1: { videoStream} , socket_ID2: { videoStream} , socket_ID3: { videoStream}}
   const { streams, setStreams, roomID, username, setMyPeerID } =
     useAppContext();
-  const {socket} = useSocket();
+  const { socket } = useSocket();
+  const myPeer = new Peer({
+    config: {
+      iceServers: [
+        { url: "stun:stun.l.google.com:19302" }, // Google's STUN server
+      ],
+    },
+  });
   useEffect(() => {
-    const myPeer = new Peer({
-      config: {
-        iceServers: [
-          { url: "stun:stun.l.google.com:19302" }, // Google's STUN server
-        ],
-      },
-    });
-
     // Get local video stream
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -34,7 +33,7 @@ const VideoGrid = () => {
           // the person who called if sends his/her videoStream strore it somewhere
           call.on("stream", (remoteStream) => {
             console.log(`Incoming call: ${call.peer}`);
-            
+
             setStreams((prevStreams) => ({
               ...prevStreams,
               [call.peer]: remoteStream,
@@ -51,7 +50,7 @@ const VideoGrid = () => {
           // receive the videoStream of the user who I called .
           call.on("stream", (remoteStream) => {
             console.log(`Incomming call from ${socketId}`);
-            
+
             setStreams((prevStreams) => ({
               ...prevStreams,
               [socketId]: remoteStream,
@@ -64,7 +63,7 @@ const VideoGrid = () => {
     myPeer.on("open", (peerID) => {
       console.log(`Your peerID is ${peerID}`);
       setMyPeerID(peerID);
-      socket.emit("joinRoom", {username,room_id:roomID});
+      socket.emit("joinRoom", { username, room_id: roomID });
     });
   }, []);
   return (
