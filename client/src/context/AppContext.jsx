@@ -18,6 +18,7 @@ export const AppContextProvider = ({ children }) => {
   const [username, setUsername] = useState("");
   const [topic, setTopic] = useState("");
   const [currentTime, setCurrentTime] = useState("");
+  const [myPeerID, setMyPeerID] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState("");
   const [activeParticipants, setActiveParticipants] = useState([]);
   useEffect(() => {
@@ -68,6 +69,7 @@ export const AppContextProvider = ({ children }) => {
         setTopic,
         currentTime,
         setCurrentTime,
+        myPeerID, setMyPeerID,
         currentDateTime,
         setCurrentDateTime,
         activeParticipants,

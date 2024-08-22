@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from "react";
-import { Socket, io } from "socket.io-client";
+import { io } from "socket.io-client";
 
 const SocketContext = createContext(null);
 
@@ -25,6 +25,6 @@ export const SocketProvider = ({ children }) => {
 
     // TODO: Define logics like username already exists and user leave teh chat etc
     return(
-        <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+        <SocketContext.Provider value={{socket}}>{children}</SocketContext.Provider>
     )
 }

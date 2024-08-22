@@ -26,7 +26,7 @@ const server = http.createServer(app);
 // Create a Socket.IO server and attach it to the HTTP server
 const io = new Server(server, {
   cors: {
-    origin: "*", // or specify allowed origins like "http://localhost:3000"
+    origin: "http://localhost:5173", // or specify allowed origins like "http://localhost:3000"
   },
 });
 
@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
     };
 
     // Emit the "user-joined-meeting" event
-    io.to(room_id).emit("user-joined-meeting", {
+    socket.broadcast.to(room_id).emit("user-joined-meeting", {
       socketId: socket.id,
       username: username,
       roomId: room_id,
@@ -135,7 +135,7 @@ io.on("connection", (socket) => {
     };
 
     // Emit the "user-joined-meeting" event
-    io.to(room_id).emit("user-joined-meeting", {
+    socket.broadcast.to(room_id).emit("user-joined-meeting", {
       socketId: socket.id,
       username: username,
       roomId: room_id,
