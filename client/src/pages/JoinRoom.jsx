@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import Logo from "../assets/Mask group.svg";
 import { useAppContext } from "../context/AppContext.jsx";
+import { useSocket } from "../context/SocketContext.jsx";
+import { useNavigate } from "react-router-dom";
 import { v6 as uuidv6 } from "uuid"; // to generate a unique roomID
 
 const JoinRoom = () => {
+  const navigate = useNavigate();
   const { roomID, setRoomID, topic, setTopic, username, setUsername } =
     useAppContext();
-
+  const {socket} = useSocket();
   const [joinOption, setJoinOption] = useState("");
 
   const generateRandomRoomID = () => {
@@ -14,6 +17,14 @@ const JoinRoom = () => {
     setRoomID(randomRoomID);
     console.log(username);
   };
+  const handleCreateNewRoom = () => {
+    socket.emit("createRoom",{username: username,room_id:roomID,room_topic: topic});
+    navigate(`/video-call/${roomID}`);
+  };
+  const handleJoinRoom = () =>{
+    socket.emit("joinRoom", { username:username, room_id: roomID });
+    navigate(`/video-call/${roomID}`);
+  }
   return (
     <div className="min-h-screen flex justify-center items-center">
       <div className="flex-col space-y-8">
@@ -70,7 +81,12 @@ const JoinRoom = () => {
               >
                 Generate Random Room ID
               </button>
-              <button className=" py-2 px-5 bg-[#0060FF] rounded-md text-white">
+              <button
+                className=" py-2 px-5 bg-[#0060FF] rounded-md text-white"
+                onClick={() => {
+                  handleCreateNewRoom()
+                }}
+              >
                 Join Room
               </button>
             </div>
@@ -92,7 +108,12 @@ const JoinRoom = () => {
                 value={roomID}
                 onChange={(e) => setRoomID(e.target.value)}
               />
-              <button className=" py-2 px-5 bg-[#0060FF] rounded-md text-white">
+              <button
+                className=" py-2 px-5 bg-[#0060FF] rounded-md text-white"
+                onClick={() => {
+                  handleJoinRoom();
+                }}
+              >
                 Join Room
               </button>
             </div>

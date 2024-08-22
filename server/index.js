@@ -4,8 +4,14 @@ import http from "http";
 import cors from "cors";
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow this specific origin
+    methods: "GET,POST,PUT,DELETE", // Allow specific methods
+    credentials: true, // Allow credentials (cookies, authorization headers)
+  })
+);
 app.use(express.json());
-app.use(cors());
 const PORT = process.env.PORT || 8000;
 
 // to store data of users
@@ -45,6 +51,9 @@ io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
   Users[socket.id] = { socketId: socket.id };
+  socket.on("connect_error", (err) => {
+    console.error("Connection Error:", err.message);
+  });
   // disconnect method
   socket.on("disconnect", () => {
     console.log(`User Disconnected:${socket.id}`);
