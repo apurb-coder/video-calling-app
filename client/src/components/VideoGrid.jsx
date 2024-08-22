@@ -71,7 +71,7 @@ const VideoGrid = () => {
   return (
     <div className="h-[85%] flex flex-col justify-center items-center videoCallContainer">
       {/* Local video */}
-      <video id="myVideo" src="" autoPlay={true} muted={true}></video>
+      <video id="myVideo"  autoPlay={true} muted={true}></video>
 
       {/* Render videos for each remote stream */}
       {/* {Object.keys(streams).map((userId) => (
