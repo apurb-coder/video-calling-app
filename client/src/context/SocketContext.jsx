@@ -41,10 +41,13 @@ export const SocketProvider = ({ children }) => {
     if (storedPeerId) {
       setMyPeerID(storedPeerId);
       console.log(`Your peerID is ${storedPeerId}`);
-      socket.emit("joinRoom", { username, room_id: roomID, peerID: storedPeerId });
-    }
-    else{
-      if(!myPeer) return;
+      socket.emit("joinRoom", {
+        username,
+        room_id: roomID,
+        peerID: storedPeerId,
+      });
+    } else {
+      if (!myPeer) return;
       myPeer.on("open", (peerID) => {
         console.log(`Your peerID is ${peerID}`);
         setMyPeerID(peerID);
@@ -58,11 +61,7 @@ export const SocketProvider = ({ children }) => {
     });
 
     setPeer(myPeer);
-
-    return () => {
-      myPeer.destroy();
-    };
-  }, []);
+  }, [socket, username, roomID]);
 
   useEffect(() => {
     if (!peer) return;

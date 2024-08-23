@@ -121,7 +121,7 @@ socket.on("leaveRoom", ({ username, room_id }) => {
 
       return;
     }
-
+    console.log(`Received joinRoom with peerID: ${peerID}`); 
     socket.join(room_id);
     console.log(`${username} joined room ${room_id}`);
 
