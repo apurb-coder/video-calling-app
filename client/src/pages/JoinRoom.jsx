@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../assets/Mask group.svg";
 import { useAppContext } from "../context/AppContext.jsx";
 import { useSocket } from "../context/SocketContext.jsx";
@@ -11,11 +11,16 @@ const JoinRoom = () => {
     useAppContext();
   const {socket} = useSocket();
   const [joinOption, setJoinOption] = useState("");
-
+  useEffect(()=>{
+    if(topic) sessionStorage.setItem("topic", topic);
+    if(username) sessionStorage.setItem("username", username);
+    if(roomID) sessionStorage.setItem("roomID", roomID);
+  },[topic, username, roomID])
   const generateRandomRoomID = () => {
     const randomRoomID = uuidv6();
     setRoomID(randomRoomID);
-    console.log(username);
+    sessionStorage.setItem("roomID", randomRoomID);
+    // console.log(username);
   };
   const handleCreateNewRoom = () => {
     socket.emit("createRoom",{username: username,room_id:roomID,room_topic: topic});

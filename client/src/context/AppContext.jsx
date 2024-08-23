@@ -51,7 +51,14 @@ export const AppContextProvider = ({ children }) => {
       clearInterval(timer); // Clean up when component unmounts
     };
   }, []);
-
+  useEffect(()=>{
+    const storedRoomID=sessionStorage.getItem("roomID");
+    const storedUsername=sessionStorage.getItem("username");
+    const storedTopic= sessionStorage.getItem("topic");
+    if(storedRoomID) setRoomID(storedRoomID);
+    if(storedUsername) setUsername(storedUsername);
+    if(storedTopic) setTopic(storedTopic);
+  },[])
   // Function : fetch Active Participants list
   const fetchActivePaticipants = () => {
     // TODO: Implement the logic to fetch active participants based on roomID
