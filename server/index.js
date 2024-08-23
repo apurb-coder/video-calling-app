@@ -51,7 +51,6 @@ app.get("/getActiveUsers", (req, res) => {
 io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
-  Users[socket.id] = { socketId: socket.id };
 
 socket.on("leaveRoom", ({ username, room_id }) => {
   console.log(`User Disconnected:${socket.id}`);
@@ -76,7 +75,7 @@ socket.on("leaveRoom", ({ username, room_id }) => {
 
   // Delete user from the Users object
   delete Users[socket.id];
-  io.to(room_id).emit("message", { username: `${username} left` });
+  socket.broadcast.to(room_id).emit("message", { username: `${username} left` });
   socket.leave(room_id);
 });
   // Create a new Room

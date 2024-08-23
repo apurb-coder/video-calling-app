@@ -41,6 +41,7 @@ export const SocketProvider = ({ children }) => {
     if (storedPeerId) {
       setMyPeerID(storedPeerId);
       console.log(`Your peerID is ${storedPeerId}`);
+      socket.emit("joinRoom", { username, room_id: roomID, peerID: storedPeerId });
     }
     else{
       if(!myPeer) return;

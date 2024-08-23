@@ -2,10 +2,15 @@ import React,{useEffect} from "react";
 import Top from "../components/Top";
 import VideoSection from "../components/VideoSection.jsx";
 import Chat from "../components/Chat";
-
+import {useParams} from "react-router-dom"
 
 
 const VideoCallingUi = () => {
+    
+  const {roomId} = useParams();
+  useEffect(() =>{
+    sessionStorage.setItem("roomID", roomId);
+  },[roomId])
   return (
     <div className="flex flex-col h-screen">
       <Top />

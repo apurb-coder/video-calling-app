@@ -58,7 +58,7 @@ export const AppContextProvider = ({ children }) => {
     if(storedRoomID) setRoomID(storedRoomID);
     if(storedUsername) setUsername(storedUsername);
     if(storedTopic) setTopic(storedTopic);
-  },[])
+  },[sessionStorage])
   // Function : fetch Active Participants list
   const fetchActivePaticipants = () => {
     // TODO: Implement the logic to fetch active participants based on roomID
