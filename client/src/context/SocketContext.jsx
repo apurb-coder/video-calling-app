@@ -32,6 +32,7 @@ export const SocketProvider = ({ children }) => {
   // Even if you refresh the page "useRef" value stays
   const isPeerSet = useRef(false);
   useEffect(() => {
+    // below is the important if statement
     if (isPeerSet.current || !roomID || !socket) return;
     isPeerSet.current = true;
     const myPeer = new Peer({
@@ -48,7 +49,8 @@ export const SocketProvider = ({ children }) => {
         iceTransportPolicy: "relay", // <- it means using only relay server (our free turn server in this case)
       },
     });
-
+    console.log("user: " + username);
+    
     myPeer.on("open", (peerID) => {
       console.log(`Your peerID is ${peerID}`);
       socket.emit("joinRoom", { username, room_id: roomID, peerID: peerID });
