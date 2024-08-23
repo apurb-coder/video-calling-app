@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, useEffect } from "react";
+import { createContext, useContext, useMemo, useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import Peer from "peerjs";
 import { useAppContext } from "./AppContext.jsx";
@@ -28,8 +28,10 @@ export const SocketProvider = ({ children }) => {
     []
   );
   
-
+  const isPeerSet = useRef(false);
   useEffect(() => {
+    if (isPeerSet.current || !roomID || !socket) return;
+    isPeerSet.current = true;
     const myPeer = new Peer({
       config: {
         iceServers: [
@@ -45,31 +47,17 @@ export const SocketProvider = ({ children }) => {
       },
     });
 
-    const storedPeerId = sessionStorage.getItem("myPeerID");
-    if (storedPeerId) {
-      setMyPeerID(storedPeerId);
-      console.log(`Your peerID is ${storedPeerId}`);
-      socket.emit("joinRoom", {
-        username,
-        room_id: roomID,
-        peerID: storedPeerId,
-      });
-    } else {
-      if (!myPeer) return;
-      myPeer.on("open", (peerID) => {
-        console.log(`Your peerID is ${peerID}`);
-        setMyPeerID(peerID);
-        sessionStorage.setItem("myPeerID", peerID);
-        socket.emit("joinRoom", { username, room_id: roomID, peerID: peerID });
-      });
-    }
+    myPeer.on("open", (peerID) => {
+      console.log(`Your peerID is ${peerID}`);
+      socket.emit("joinRoom", { username, room_id: roomID, peerID: peerID });
+    });
 
     myPeer.on("error", (error) => {
       console.error("PeerJS error:", error);
     });
 
     setPeer(myPeer);
-  }, [socket, username, roomID]);
+  }, [socket, roomID]);
 
   useEffect(() => {
     if (!peer) return;

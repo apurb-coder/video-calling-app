@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppContext } from "../context/AppContext.jsx";
+import { useSocket } from "../context/SocketContext.jsx";
 
 const VideoGrid = () => {
-  const { streams } = useAppContext();
-
+  const { streams, roomID, username, setMyPeerID } = useAppContext();
+  const {socket} = useSocket()
+  useEffect(()=>{
+    const storedPeerId = sessionStorage.getItem("myPeerID");
+    if (storedPeerId) {
+      setMyPeerID(storedPeerId);
+      console.log(`Your peerID is ${storedPeerId}`);
+      socket.emit("joinRoom", {
+        username,
+        room_id: roomID,
+        peerID: storedPeerId,
+      });
+    }
+  },[])
   return (
     <>
       {/* Local video */}
