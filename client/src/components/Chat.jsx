@@ -1,10 +1,9 @@
-import React,{useState} from "react";
-import EmojiPicker from "emoji-picker-react";
+import React, { useState, lazy, Suspense } from "react";
 import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
 import fileSendLogo from "../assets/Group 237548.svg"
 import SmilyIcon from "../assets/smiley.svg"
-
+const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [inputText, setInputText] = useState("")
@@ -25,13 +24,16 @@ const Chat = () => {
       </div>
       <div className="flex-grow">
         <h2 className="p-4 font-medium items-center bg-white">Chats</h2>
-        <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md">
-          
-        </div>
+        <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md"></div>
       </div>
       <div className="absolute bottom-20 z-10">
         {isEmojiOpen ? (
-          <EmojiPicker className="ml-16" onEmojiClick={handleEmojiClick} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyEmojiPicker
+              className="ml-16"
+              onEmojiClick={handleEmojiClick}
+            />
+          </Suspense>
         ) : (
           <></>
         )}
