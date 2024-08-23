@@ -79,8 +79,9 @@ export const SocketProvider = ({ children }) => {
       .then((stream) => {
         window.localStream = stream;
 
+        //handle incomming calls
         peer.on("call", (call) => {
-          console.log(`Incoming call from ${call.peer}`);
+          console.log(`Incomming Stream from ${call.peer}`);
 
           // Check if the peerID is already present in the streams
           if (!streams[call.peer]) {
@@ -97,6 +98,8 @@ export const SocketProvider = ({ children }) => {
 
         socket.on("user-joined-meeting", ({ peerID }) => {
           console.log(`User joined meeting: ${peerID}`);
+          // call users iwth peerID
+          // peerID: is the ID revived from client side from peerjs
           const call = peer.call(peerID, stream);
           call.on("stream", (remoteStream) => {
             console.log(`Received stream from: ${peerID}`);
