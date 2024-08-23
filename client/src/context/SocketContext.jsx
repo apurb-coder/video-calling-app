@@ -33,10 +33,18 @@ export const SocketProvider = ({ children }) => {
     const myPeer = new Peer({
       config: {
         iceServers: [
-          { urls: "stun:stun.l.google.com:19302" }, // Google's STUN server
+          { urls: "stun:stun.l.google.com:19302" },
+          {
+            urls: "turn:0.peerjs.com:3478",
+            username: "peerjs",
+            credential: "peerjsp",
+          },
         ],
+        sdpSemantics: "unified-plan",
+        iceTransportPolicy: "relay", // <- it means using only relay server (our free turn server in this case)
       },
     });
+
     const storedPeerId = sessionStorage.getItem("myPeerID");
     if (storedPeerId) {
       setMyPeerID(storedPeerId);
