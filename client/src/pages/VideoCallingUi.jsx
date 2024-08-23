@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import Top from "../components/Top";
 import VideoSection from "../components/VideoSection.jsx";
 import Chat from "../components/Chat";

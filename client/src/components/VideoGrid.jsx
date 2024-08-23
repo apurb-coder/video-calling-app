@@ -12,7 +12,7 @@ const VideoGrid = () => {
   const myPeer = new Peer({
     config: {
       iceServers: [
-        { url: "stun:stun.l.google.com:19302" }, // Google's STUN server
+        { urls: "stun:stun.l.google.com:19302" }, // Google's STUN server
       ],
     },
   });
@@ -31,6 +31,8 @@ const VideoGrid = () => {
         // Handle incoming calls
         myPeer.on("call", (call) => {
           // if someone is calling answer their calls with my videoStream
+          console.log(`Incoming call from ${call.peer}`);
+          
           call.answer(stream);
           // the person who called if sends his/her videoStream strore it somewhere
           call.on("stream", (remoteStream) => {
@@ -45,17 +47,17 @@ const VideoGrid = () => {
 
         // Handle user joining the meeting
         // socketID: of who joined the meeting
-        socket.on("user-joined-meeting", ({ socketId }) => {
-          console.log(`User joined meeting: ${socketId}`);
-          // send my videoStream to the socketID who joined the meeting
-          const call = myPeer.call(socketId, stream);
+        socket.on("user-joined-meeting", ({ peerID }) => {
+          console.log(`User joined meeting: ${peerID}`);
+          // send my videoStream to the peerID who joined the meeting
+          // peerID: peerID we got from client side using peerjs
+          const call = myPeer.call(peerID, stream);
           // receive the videoStream of the user who I called .
           call.on("stream", (remoteStream) => {
-            console.log(`Incomming call from ${socketId}`);
-            
+            console.log(`Incoming call from ${peerID}`);
             setStreams((prevStreams) => ({
               ...prevStreams,
-              [socketId]: remoteStream,
+              [peerID]: remoteStream,
             }));
           });
         });
@@ -65,7 +67,7 @@ const VideoGrid = () => {
     myPeer.on("open", (peerID) => {
       console.log(`Your peerID is ${peerID}`);
       setMyPeerID(peerID);
-      socket.emit("joinRoom", {username,room_id:roomID});
+      socket.emit("joinRoom", {username,room_id:roomID, peerID: peerID});
     });
   }, []);
   return (

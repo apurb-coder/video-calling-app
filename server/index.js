@@ -16,7 +16,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 8000;
 
 // to store data of users
-// Const Users= {socketId:{username:test,SocketId:84274,roomId:472384}}
+// Const Users= {peerId:{username:test,SocketId:84274,roomId:472384}}
 const Users = {};
 // Room data
 /* Rooms = {
@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
     socket.join(room_id);
-    console.log(`${username} joined or created room ${room_id}`);
+    console.log(`${username} joined or created room ${room_id} socketID: ${socket.id}` );
 
     // If the room doesn't exist, create it
     if (!Rooms[room_id]) {
@@ -122,10 +122,10 @@ io.on("connection", (socket) => {
 
   // join an existing room method
   // Functioning: emit an event joinRoom from client side -> server is listening to joinRoom event and it adds the user to the room -> emit user-joined-meet, to tell client user sucessfully
-  socket.on("joinRoom", ({ username, room_id }) => {
+  socket.on("joinRoom", ({ username, room_id, peerID }) => {
     if (!Rooms[room_id]) {
       socket.emit("error", { message: "Room not found" });
-      console.log("Room not found ");
+      console.log("Room not found ",room_id);
       
       return;
     }
@@ -137,8 +137,8 @@ io.on("connection", (socket) => {
     Rooms[room_id].Active_users.push(username);
 
     // Save the user in the Users object with the roomId
-    Users[socket.id] = {
-      ...Users[socket.id],
+    Users[peerID] = {
+      ...Users[peerID],
       username: username,
       roomId: room_id,
     };
@@ -148,6 +148,7 @@ io.on("connection", (socket) => {
       socketId: socket.id,
       username: username,
       roomId: room_id,
+      peerID: peerID,
     });
   });
 
