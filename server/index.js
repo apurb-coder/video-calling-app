@@ -52,47 +52,40 @@ io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
   Users[socket.id] = { socketId: socket.id };
-  // disconnect method
-  socket.on("disconnect", () => {
-    console.log(`User Disconnected:${socket.id}`);
 
-    // Retrieve roomId and username before deleting the user from Users
-    const { roomId, username } = Users[socket.id] || {};
+socket.on("leaveRoom", ({ username, room_id }) => {
+  console.log(`User Disconnected:${socket.id}`);
 
-    if (roomId && Rooms[roomId]) {
-      // Find the index of the username in the Active_users array
-      const userIndex = Rooms[roomId].Active_users.indexOf(username);
+  // Retrieve roomId before deleting the user from Users
+  const { roomId } = Users[socket.id] || {};
 
-      if (userIndex !== -1) {
-        // Remove the user from the Active_users array
-        Rooms[roomId].Active_users.splice(userIndex, 1);
-      }
+  if (roomId && Rooms[roomId]) {
+    // Find the index of the username in the Active_users array
+    const userIndex = Rooms[roomId].Active_users.indexOf(username);
 
-      // Optionally, delete the room if no active users remain
-      if (Rooms[roomId].Active_users.length === 0) {
-        delete Rooms[roomId];
-      }
+    if (userIndex !== -1) {
+      // Remove the user from the Active_users array
+      Rooms[roomId].Active_users.splice(userIndex, 1);
     }
 
-    // Delete user from the Users object
-    delete Users[socket.id];
-  });
+    // Optionally, delete the room if no active users remain
+    if (Rooms[roomId].Active_users.length === 0) {
+      delete Rooms[roomId];
+    }
+  }
 
-  // remove username from room
-  socket.on("leaveRoom", ({ username, room_id }) => {
-    console.log(`${username} left room ${room_id}`);
-    // remove username from active_users array in Rooms object
-    delete Rooms[room_id].Active_users[
-      Rooms[room_id].Active_users.indexOf(username)
-    ];
-    io.to(room_id).emit("message", { username: `${username} left` });
-    socket.leave(room_id);
-  });
+  // Delete user from the Users object
+  delete Users[socket.id];
+  io.to(room_id).emit("message", { username: `${username} left` });
+  socket.leave(room_id);
+});
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
     socket.join(room_id);
-    console.log(`${username} joined or created room ${room_id} socketID: ${socket.id}` );
+    console.log(
+      `${username} joined or created room ${room_id} socketID: ${socket.id}`
+    );
 
     // If the room doesn't exist, create it
     if (!Rooms[room_id]) {
@@ -125,8 +118,8 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room_id, peerID }) => {
     if (!Rooms[room_id]) {
       socket.emit("error", { message: "Room not found" });
-      console.log("Room not found ",room_id);
-      
+      console.log("Room not found ", room_id);
+
       return;
     }
 
@@ -137,8 +130,8 @@ io.on("connection", (socket) => {
     Rooms[room_id].Active_users.push(username);
 
     // Save the user in the Users object with the roomId
-    Users[peerID] = {
-      ...Users[peerID],
+    Users[socket.id] = {
+      ...Users[socket.id],
       username: username,
       roomId: room_id,
     };
