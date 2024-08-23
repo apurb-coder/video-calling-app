@@ -27,6 +27,7 @@ export const SocketProvider = ({ children }) => {
       }),
     []
   );
+  
 
   useEffect(() => {
     const myPeer = new Peer({
@@ -36,7 +37,6 @@ export const SocketProvider = ({ children }) => {
         ],
       },
     });
-
     const storedPeerId = sessionStorage.getItem("myPeerID");
     if (storedPeerId) {
       setMyPeerID(storedPeerId);
@@ -73,14 +73,18 @@ export const SocketProvider = ({ children }) => {
 
         peer.on("call", (call) => {
           console.log(`Incoming call from ${call.peer}`);
-          call.answer(stream);
-          call.on("stream", (remoteStream) => {
-            console.log(`Received stream from: ${call.peer}`);
-            setStreams((prevStreams) => ({
-              ...prevStreams,
-              [call.peer]: remoteStream,
-            }));
-          });
+
+          // Check if the peerID is already present in the streams
+          if (!streams[call.peer]) {
+            call.answer(window.localStream);
+            call.on("stream", (remoteStream) => {
+              console.log(`Received stream from: ${call.peer}`);
+              setStreams((prevStreams) => ({
+                ...prevStreams,
+                [call.peer]: remoteStream,
+              }));
+            });
+          }
         });
 
         socket.on("user-joined-meeting", ({ peerID }) => {
