@@ -51,6 +51,7 @@ export const AppContextProvider = ({ children }) => {
       clearInterval(timer); // Clean up when component unmounts
     };
   }, []);
+  // whenever there is change in session storage , getItem from session storage
   useEffect(()=>{
     const storedRoomID=sessionStorage.getItem("roomID");
     const storedUsername=sessionStorage.getItem("username");
