@@ -28,6 +28,8 @@ export const SocketProvider = ({ children }) => {
     []
   );
   
+  // useRef is generally used as a flag in react js, it doesnt cause re-rendering.
+  // Even if you refresh the page "useRef" value stays
   const isPeerSet = useRef(false);
   useEffect(() => {
     if (isPeerSet.current || !roomID || !socket) return;
