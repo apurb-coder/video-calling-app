@@ -12,6 +12,6 @@
 
 /* For proper emoji render it must have thease fonts in it */
 .emojiRender {
-  font-family: "Noto Color Emoji", sans-serif,monospace;
+  font-family: "Noto Color Emoji", sans-serif,monospace,arial;
 }
 
