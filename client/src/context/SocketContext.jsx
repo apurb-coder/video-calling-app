@@ -111,17 +111,18 @@ export const SocketProvider = ({ children }) => {
     };
   }, [peer]);
 
-  const joinRoom = (isNewRoom = false) => {
+  const joinRoomHandle = (isNewRoom = false) => {
     if (!peer) {
       console.error("Peer not initialized");
       return;
     }
     const peerID = peer.id;
     if (isNewRoom) {
+      const topic = sessionStorage.getItem("topic")
       socket.emit("createRoom", {
-        username,
+        username: username,
         room_id: roomID,
-        peerID,
+        room_topic: topic,
       });
     } else {
       socket.emit("joinRoom", {
@@ -133,7 +134,7 @@ export const SocketProvider = ({ children }) => {
   };
 
   return (
-    <SocketContext.Provider value={{ socket, peer, streams, joinRoom }}>
+    <SocketContext.Provider value={{ socket, peer, streams, joinRoomHandle }}>
       {children}
     </SocketContext.Provider>
   );

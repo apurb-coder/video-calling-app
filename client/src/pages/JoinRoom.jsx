@@ -5,11 +5,12 @@ import { useSocket } from "../context/SocketContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { v6 as uuidv6 } from "uuid"; // to generate a unique roomID
 
+
 const JoinRoom = () => {
   const navigate = useNavigate();
   const { roomID, setRoomID, topic, setTopic, username, setUsername } =
     useAppContext();
-  const {socket} = useSocket();
+  const { socket, joinRoomHandle } = useSocket();
   const [joinOption, setJoinOption] = useState("");
   useEffect(()=>{
     if(topic) sessionStorage.setItem("topic", topic);
@@ -23,11 +24,11 @@ const JoinRoom = () => {
     // console.log(username);
   };
   const handleCreateNewRoom = () => {
-    socket.emit("createRoom",{username: username,room_id:roomID,room_topic: topic});
+    joinRoomHandle(true)
     navigate(`/video-call/${roomID}`);
   };
   const handleJoinRoom = () =>{
-    socket.emit("joinRoom", { username:username, room_id: roomID });
+    joinRoomHandle(false)
     navigate(`/video-call/${roomID}`);
   }
   return (

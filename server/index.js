@@ -39,13 +39,22 @@ const io = new Server(server, {
 
 // endpoint to get all active users in a room, Required data from front-end side: roomId
 app.get("/getActiveUsers", (req, res) => {
-  const room_id = req.params.room; // send in params from front-end side
+  const room_id = req.query.room; // send in params from front-end side
   if (Rooms[room_id]) {
     res.json(Rooms[room_id].Active_users);
   } else {
     res.status(404).json({ message: "Room not found" });
   }
 });
+
+app.get("/topic", (req, res) => {
+  const room_id = req.query.room; // send in params from front-end side
+  if (Rooms[room_id]) {
+    res.json(Rooms[room_id].Room_topic);
+  } else {
+    res.status(404).json({ message: "Room not found" });
+  }
+})
 
 //socket.io implementation
 io.on("connection", (socket) => {
