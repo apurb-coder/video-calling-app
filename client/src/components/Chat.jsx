@@ -17,7 +17,7 @@ const Chat = () => {
     // setInputText((prev)=> prev + {<Emoji />})
   };
   const handleEmojiOutsideClick = (event) =>{
-    if(emojiRef.current && !emojiRef.current.contains(event.target) && !emojiButtonRef.current.contains(event.target)){
+    if(emojiRef.current && emojiButtonRef.current && !emojiRef.current.contains(event.target) && !emojiButtonRef.current.contains(event.target)){
       setIsEmojiOpen(false)
     }
   }
