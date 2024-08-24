@@ -88,8 +88,10 @@ export const SocketProvider = ({ children }) => {
           }
         });
 
-        socket.on("user-joined-meeting", ({ peerID }) => {
+        socket.on("user-joined-meeting", ({ peerID, room_topic }) => {
           console.log(`User joined meeting: ${peerID}`);
+          console.log(`Room Topic: ${room_topic}`);
+          sessionStorage.setItem("topic",room_topic)
           // call users iwth peerID
           // peerID: is the ID revived from client side from peerjs
           const call = peer.call(peerID, stream);
