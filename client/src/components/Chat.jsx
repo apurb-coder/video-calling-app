@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, lazy, Suspense, useEffect, useRef } from "react";
 import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
 import fileSendLogo from "../assets/Group 237548.svg";
@@ -7,6 +7,8 @@ const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [inputText, setInputText] = useState("");
+  const emojiRef = useRef(null);
+  const emojiButtonRef = useRef(null);
   const toggleEmojiPicker = () => {
     setIsEmojiOpen((prev) => !prev);
   };
@@ -14,6 +16,19 @@ const Chat = () => {
     setInputText((prev) => prev + emojiObject.emoji);
     // setInputText((prev)=> prev + {<Emoji />})
   };
+  const handleEmojiOutsideClick = (event) =>{
+    if(emojiRef.current && !emojiRef.current.contains(event.target) && !emojiButtonRef.current.contains(event.target)){
+      setIsEmojiOpen(false)
+    }
+  }
+  useEffect(()=>{
+    if(isEmojiOpen){
+      document.addEventListener("mousedown", handleEmojiOutsideClick)
+    }
+    return ()=>{
+      document.removeEventListener("mousedown", handleEmojiOutsideClick)
+    }
+  },[isEmojiOpen])
   return (
     <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
       <div className="p-4 flex space-x-5 items-center bg-white">
@@ -27,7 +42,7 @@ const Chat = () => {
         <h2 className="p-4 font-medium items-center bg-white">Chats</h2>
         <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md"></div>
       </div>
-      <div className="absolute bottom-20 z-10">
+      <div className="absolute bottom-20 z-10" ref={emojiRef}>
         {isEmojiOpen ? (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyEmojiPicker
@@ -59,6 +74,7 @@ const Chat = () => {
             alt="send_logo"
             className="w-6 cursor-pointer"
             onClick={toggleEmojiPicker}
+            ref={emojiButtonRef}
           />
         </div>
       </div>
