@@ -41,7 +41,7 @@ const io = new Server(server, {
 app.get("/getActiveUsers", (req, res) => {
   const room_id = req.query.room; // send in params from front-end side
   if (Rooms[room_id]) {
-    res.json(Rooms[room_id].Active_users);
+    res.status(200).json({ topic: Rooms[room_id].Active_users });
   } else {
     res.status(404).json({ message: "Room not found" });
   }
@@ -50,7 +50,7 @@ app.get("/getActiveUsers", (req, res) => {
 app.get("/topic", (req, res) => {
   const room_id = req.query.room; // send in params from front-end side
   if (Rooms[room_id]) {
-    res.json(Rooms[room_id].Room_topic);
+    res.json({ topic: Rooms[room_id].Room_topic });
   } else {
     res.status(404).json({ message: "Room not found" });
   }
