@@ -150,7 +150,6 @@ socket.on("leaveRoom", ({ username, room_id }) => {
       username: username,
       roomId: room_id,
       peerID: peerID,
-      room_topic: Rooms[room_id].Room_topic,
     });
   });
 
