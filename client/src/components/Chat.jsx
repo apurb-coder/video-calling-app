@@ -42,8 +42,8 @@ const Chat = () => {
         <h2 className="p-4 font-medium items-center bg-white">Chats</h2>
         <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md"></div>
       </div>
-      <div className="absolute bottom-20 z-10" ref={emojiRef}>
-        {isEmojiOpen ? (
+      <div className="fixed bottom-20 z-10 w-0" ref={emojiRef}>
+        {isEmojiOpen && (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyEmojiPicker
               className="ml-16"
@@ -52,8 +52,6 @@ const Chat = () => {
               lazyLoadEmojis="true"
             />
           </Suspense>
-        ) : (
-          <></>
         )}
       </div>
       <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
