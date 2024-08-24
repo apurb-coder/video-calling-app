@@ -8,7 +8,7 @@ import axios from "axios";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Top = () => {
-  const { currentDateTime, topic, setTopic } = useAppContext();
+  const { currentDateTime, topic, setTopic, roomID } = useAppContext();
   useEffect(() => {
     const fetchTopic = async () => {
       const room = sessionStorage.getItem("roomID")
@@ -33,9 +33,9 @@ const Top = () => {
         <h2 className=" text-xl font-semibold">{topic}</h2>
         <p className="text-sm text-gray-400 font-semibold">{currentDateTime}</p>
       </div>
-      <div className="p-4 bg-[#DFEBFF] text-[#0060FF] m-4 px-8 rounded-full text-sm flex space-x-1">
+      <div className="p-4 bg-[#DFEBFF] text-[#0060FF] m-4 px-8 rounded-full text-sm flex space-x-1 hover:cursor-pointer" onClick={(e)=>{navigator.clipboard.writeText(roomID)}}>
         <img src={LinkLogo} alt="Link logo" className="w-6 font-bold" />
-        <p>| Room-Id</p>
+        <p>| {roomID}</p>
       </div>
     </div>
   );
