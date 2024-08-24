@@ -1,18 +1,19 @@
 import React, { useState, lazy, Suspense } from "react";
 import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
-import fileSendLogo from "../assets/Group 237548.svg"
-import SmilyIcon from "../assets/smiley.svg"
+import fileSendLogo from "../assets/Group 237548.svg";
+import SmilyIcon from "../assets/smiley.svg";
 const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
-  const [inputText, setInputText] = useState("")
-   const toggleEmojiPicker = () => {
-     setIsEmojiOpen((prev) => !prev);
-   };
-   const handleEmojiClick=(emojiObject)=>{
-      setInputText((prev)=> prev + emojiObject.emoji)
-   }
+  const [inputText, setInputText] = useState("");
+  const toggleEmojiPicker = () => {
+    setIsEmojiOpen((prev) => !prev);
+  };
+  const handleEmojiClick = (emojiObject) => {
+    setInputText((prev) => prev + emojiObject.emoji);
+    // setInputText((prev)=> prev + {<Emoji />})
+  };
   return (
     <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
       <div className="p-4 flex space-x-5 items-center bg-white">
@@ -32,6 +33,8 @@ const Chat = () => {
             <LazyEmojiPicker
               className="ml-16"
               onEmojiClick={handleEmojiClick}
+              emojiStyle="google"
+              lazyLoadEmojis="true"
             />
           </Suspense>
         ) : (
@@ -43,7 +46,7 @@ const Chat = () => {
           <textarea
             onChange={(e) => setInputText(e.target.value)}
             value={inputText}
-            className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none"
+            className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none emojiRender"
           />
           <img src={send_logo} alt="send_logo" className="w-6 cursor-pointer" />
           <img

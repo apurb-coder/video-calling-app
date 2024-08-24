@@ -29,7 +29,7 @@ export const SocketProvider = ({ children }) => {
   );
   
   // useRef is generally used as a flag in react js, it doesnt cause re-rendering.
-  // Even if you refresh the page "useRef" value stays
+  // Even if any componenets re-renders "useRef" value stays
   const isPeerSet = useRef(false);
   useEffect(() => {
     // below is the important if statement
@@ -59,7 +59,7 @@ export const SocketProvider = ({ children }) => {
     myPeer.on("error", (error) => {
       console.error("PeerJS error:", error);
     });
-
+    // important
     setPeer(myPeer);
   }, [socket, roomID]);
 
