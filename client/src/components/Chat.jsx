@@ -3,6 +3,7 @@ import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
 import fileSendLogo from "../assets/Group 237548.svg";
 import SmilyIcon from "../assets/smiley.svg";
+import { FaRegSmileWink } from "react-icons/fa";
 const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
@@ -16,19 +17,24 @@ const Chat = () => {
     setInputText((prev) => prev + emojiObject.emoji);
     // setInputText((prev)=> prev + {<Emoji />})
   };
-  const handleEmojiOutsideClick = (event) =>{
-    if(emojiRef.current && emojiButtonRef.current && !emojiRef.current.contains(event.target) && !emojiButtonRef.current.contains(event.target)){
-      setIsEmojiOpen(false)
+  const handleEmojiOutsideClick = (event) => {
+    if (
+      emojiRef.current &&
+      emojiButtonRef.current &&
+      !emojiRef.current.contains(event.target) &&
+      !emojiButtonRef.current.contains(event.target)
+    ) {
+      setIsEmojiOpen(false);
     }
-  }
-  useEffect(()=>{
-    if(isEmojiOpen){
-      document.addEventListener("mousedown", handleEmojiOutsideClick)
+  };
+  useEffect(() => {
+    if (isEmojiOpen) {
+      document.addEventListener("mousedown", handleEmojiOutsideClick);
     }
-    return ()=>{
-      document.removeEventListener("mousedown", handleEmojiOutsideClick)
-    }
-  },[isEmojiOpen])
+    return () => {
+      document.removeEventListener("mousedown", handleEmojiOutsideClick);
+    };
+  }, [isEmojiOpen]);
   return (
     <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
       <div className="p-4 flex space-x-5 items-center bg-white">
@@ -67,13 +73,19 @@ const Chat = () => {
             alt="send_logo"
             className="w-6 cursor-pointer"
           />
-          <img
+          {/* <img
             src={SmilyIcon}
             alt="send_logo"
             className="w-6 cursor-pointer"
             onClick={toggleEmojiPicker}
             ref={emojiButtonRef}
-          />
+          /> */}
+          <div ref={emojiButtonRef}>
+            <FaRegSmileWink
+              className=" text-xl cursor-pointer text-gray-500/80"
+              onClick={toggleEmojiPicker}
+            />
+          </div>
         </div>
       </div>
     </div>
