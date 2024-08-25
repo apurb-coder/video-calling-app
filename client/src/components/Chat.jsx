@@ -2,7 +2,6 @@ import React, { useState, lazy, Suspense, useEffect, useRef } from "react";
 import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
 import fileSendLogo from "../assets/Group 237548.svg";
-import SmilyIcon from "../assets/smiley.svg";
 import { FaRegSmileWink } from "react-icons/fa";
 const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
