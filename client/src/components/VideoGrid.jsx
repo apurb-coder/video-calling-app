@@ -7,43 +7,27 @@ const VideoGrid = () => {
   const { socket } = useSocket();
   const videoRef = useRef(null);
 
-  const startVideoStream = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-
-      // Additional setup if necessary
-    } catch (error) {
-      console.error("Error accessing media devices:", error);
-    }
-  };
-
   useEffect(() => {
-    startVideoStream();
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        // Reinitialize stream if needed when the tab is active again
-        if (!videoRef.current.srcObject) {
-          startVideoStream();
+    // Request media stream
+    const startVideoStream = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
         }
-      } else {
-        // Optional: pause video or any other handling when tab is inactive
+
+        // Handle other setup, like sending stream over socket, etc.
+      } catch (error) {
+        console.error("Error accessing media devices:", error);
+        // Handle error, e.g., notify the user or fallback
       }
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    startVideoStream();
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-
-      // Cleanup media tracks
+      // Cleanup stream when component unmounts
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach((track) => track.stop());
