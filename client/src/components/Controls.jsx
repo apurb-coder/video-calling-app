@@ -6,7 +6,7 @@ import recordMeetIcon from "../assets/Group 33.svg";
 
 const Controls = () => {
   return (
-    <div className="flex flex-col h-[15%] items-center justify-center">
+    <div className="flex flex-col h-[15%] items-center justify-center fixed bottom-0 left-0 right-[26.3125rem]">
       <div className="flex relative w-full items-center justify-center">
         <div className="flex space-x-5">
           {/* Toggle on/off microPhone */}

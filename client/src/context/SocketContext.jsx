@@ -19,7 +19,6 @@ export const SocketProvider = ({ children }) => {
   const [peer, setPeer] = useState(null);
   const {streams, setStreams} = useAppContext();
   const { roomID, username, setMyPeerID } = useAppContext();
-  const [myStream, setMyStream] = useState(null);
 
   const socket = useMemo(
     () =>
@@ -71,7 +70,6 @@ export const SocketProvider = ({ children }) => {
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         window.localStream = stream;
-        setMyStream(stream);
         //handle incomming calls
         peer.on("call", (call) => {
           console.log(`Incomming Stream from ${call.peer}`);
@@ -136,7 +134,7 @@ export const SocketProvider = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ socket, peer, streams, joinRoomHandle, myStream, setMyStream }}
+      value={{ socket, peer, streams, joinRoomHandle}}
     >
       {children}
     </SocketContext.Provider>

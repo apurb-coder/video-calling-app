@@ -4,7 +4,7 @@ import { useSocket } from "../context/SocketContext.jsx";
 
 const VideoGrid = () => {
   const { streams, roomID, username, setMyPeerID } = useAppContext();
-  const { socket, myStream} = useSocket();
+  const { socket} = useSocket();
   useEffect(()=>{
     const storedPeerId = sessionStorage.getItem("myPeerID");
     if (storedPeerId) {
@@ -21,8 +21,8 @@ const VideoGrid = () => {
     <>
       {/* Local video */}
       <video
-        srcObject={window.localstream}
         id="myVideo"
+        className="w-80 h-80"
         muted
         autoPlay
         playsInline
