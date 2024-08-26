@@ -4,7 +4,7 @@ import { useSocket } from "../context/SocketContext.jsx";
 
 const VideoGrid = () => {
   const { streams, roomID, username, setMyPeerID } = useAppContext();
-  const {socket} = useSocket()
+  const { socket, myStream} = useSocket();
   useEffect(()=>{
     const storedPeerId = sessionStorage.getItem("myPeerID");
     if (storedPeerId) {
@@ -20,7 +20,16 @@ const VideoGrid = () => {
   return (
     <>
       {/* Local video */}
-      <video id="myVideo" muted autoPlay playsInline></video>
+      <video
+        srcObject={window.localstream}
+        id="myVideo"
+        muted
+        autoPlay
+        playsInline
+        ref={(videoElement) => {
+          if (videoElement) videoElement.srcObject = window.localStream;
+        }}
+      />
 
       {/* Render videos for each remote stream */}
       {/* {Object.entries(streams).map(([userId, stream]) => (
