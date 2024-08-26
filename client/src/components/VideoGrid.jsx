@@ -1,21 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAppContext } from "../context/AppContext.jsx";
 import { useSocket } from "../context/SocketContext.jsx";
 
 const VideoGrid = () => {
   const { streams, roomID, username, setMyPeerID } = useAppContext();
   const { socket} = useSocket();
+  
   useEffect(()=>{
-    const storedPeerId = sessionStorage.getItem("myPeerID");
-    if (storedPeerId) {
-      setMyPeerID(storedPeerId);
-      console.log(`Your peerID is ${storedPeerId}`);
-      socket.emit("joinRoom", {
-        username,
-        room_id: roomID,
-        peerID: storedPeerId,
-      });
-    }
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream)=>{
+      document.getElementById("myVideo").srcObject = stream;
+    })
   },[])
   return (
     <>
@@ -26,9 +20,6 @@ const VideoGrid = () => {
         muted
         autoPlay
         playsInline
-        ref={(videoElement) => {
-          if (videoElement) videoElement.srcObject = window.localStream;
-        }}
       />
 
       {/* Render videos for each remote stream */}
