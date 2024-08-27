@@ -25,14 +25,6 @@ const VideoGrid = () => {
     };
 
     startVideoStream();
-
-    return () => {
-      // Cleanup stream when component unmounts
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
   }, []);
 
   return (
