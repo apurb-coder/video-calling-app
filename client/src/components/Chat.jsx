@@ -36,16 +36,16 @@ const Chat = () => {
   }, [isEmojiOpen]);
   return (
     <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
-      <div className="p-4 flex space-x-5 items-center bg-white">
-        <p className="font-medium">Participants</p>
-        <div className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-3 px-4 rounded-full space-x-1">
-          <p>Add Participants</p>
+      <div className="p-2 flex space-x-5 items-center bg-white">
+        {/* <p className="font-medium">Participants</p> */}
+        <div className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-2 px-4 rounded-full space-x-1">
+          <p>White Board</p>
           <img src={user_add} alt="user_add" className="w-3" />
         </div>
       </div>
       <div className="flex-grow">
-        <h2 className="p-4 font-medium items-center bg-white">Chats</h2>
-        <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md"></div>
+        <h2 className="p-2 font-medium items-center bg-white">Chats</h2>
+        {/* <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md"></div> */}
       </div>
       <div className="fixed bottom-20 z-10 w-0" ref={emojiRef}>
         {isEmojiOpen && (

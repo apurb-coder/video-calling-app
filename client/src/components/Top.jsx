@@ -25,15 +25,15 @@ const Top = ({roomExits, topicExits}) => {
 
   return (
     <div className="flex justify-around">
-      <div className="p-4">
+      <div className="p-2 flex justify-center items-center">
         <img src={Logo} alt="logo" className="w-8" />
       </div>
-      <div className="p-4">
-        <h2 className=" text-xl font-semibold">{topicExits? topic: "Topic Invalid"}</h2>
-        <p className="text-sm text-gray-400 font-semibold">{currentDateTime}</p>
+      <div className="p-2">
+        <h2 className=" text-lg font-semibold">{topicExits? topic: "Topic Invalid"}</h2>
+        <p className="text-xs text-gray-400 font-semibold">{currentDateTime}</p>
       </div>
       <div
-        className="p-4 bg-[#DFEBFF] text-[#0060FF] m-4 px-8 rounded-full text-sm flex space-x-1 hover:cursor-pointer"
+        className="p-2 bg-[#DFEBFF] text-[#0060FF] m-4 px-8 rounded-full text-xs flex justify-center items-center space-x-1 hover:cursor-pointer"
         onClick={(e) => {
           navigator.clipboard.writeText(roomID);
         }}
