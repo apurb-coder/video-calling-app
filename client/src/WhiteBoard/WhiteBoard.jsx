@@ -1,4 +1,5 @@
 import { Tldraw } from "tldraw";
+import "./WhiteBoard.css"
 
 const WhiteBoard = () => {
   return (

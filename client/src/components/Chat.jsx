@@ -1,10 +1,12 @@
 import React, { useState, lazy, Suspense, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
 import fileSendLogo from "../assets/Group 237548.svg";
 import { FaRegSmileWink } from "react-icons/fa";
 const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
+  const navigate  = useNavigate();
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
   const [inputText, setInputText] = useState("");
   const emojiRef = useRef(null);
@@ -34,11 +36,15 @@ const Chat = () => {
       document.removeEventListener("mousedown", handleEmojiOutsideClick);
     };
   }, [isEmojiOpen]);
+  const {roomId} = useParams();
+  const handleWhiteBoardClick=(event)=>{
+    navigate(`/video-call/${roomId}/whiteboard`);
+  }
   return (
     <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
       <div className="p-2 flex space-x-5 items-center bg-white">
         {/* <p className="font-medium">Participants</p> */}
-        <div className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-2 px-4 rounded-full space-x-1">
+        <div className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-2 px-4 rounded-full space-x-1 hover:cursor-pointer" onClick={handleWhiteBoardClick}>
           <p>White Board</p>
           <img src={user_add} alt="user_add" className="w-3" />
         </div>
