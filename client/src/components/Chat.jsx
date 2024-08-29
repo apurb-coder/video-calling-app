@@ -2,8 +2,8 @@ import React, { useState, lazy, Suspense, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
-import fileSendLogo from "../assets/Group 237548.svg";
 import { FaRegSmileWink } from "react-icons/fa";
+import { RxImage } from "react-icons/rx";
 const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
   const navigate  = useNavigate();
@@ -84,8 +84,13 @@ const Chat = () => {
           <img src={send_logo} alt="send_logo" className="w-6 cursor-pointer" />
           <div className=" relative w-6 cursor-pointer">
             {/* inset-0 : top-0 , right-0, bottom-0, right-0 */}
-            <input type="file" id="submit file" className=" absolute inset-0 opacity-0 cursor-pointer " />
-            <img src={fileSendLogo} alt="send_logo" />
+            <input
+              type="file"
+              accept="image/*"
+              id="submit file"
+              className=" absolute inset-0 opacity-0 cursor-pointer "
+            />
+            <RxImage className="text-xl cursor-pointer text-gray-500/80" />
           </div>
           {/* <img
             src={SmilyIcon}
