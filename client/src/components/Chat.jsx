@@ -75,9 +75,9 @@ const Chat = () => {
             value={inputText}
             className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none emojiRender"
             style={{
-              height: `${Math.min(inputText.split("\n").length * 20, 150)}px`, // Adjust the height dynamically, capping at 150px
+              height: `${Math.min(inputText.split("\n").length * 20, 70)}px`, // Adjust the height dynamically, capping at 75px
               overflowY:
-                inputText.split("\n").length * 20 > 150 ? "auto" : "hidden", // Show scrollbar if height exceeds 150px
+                inputText.split("\n").length * 20 > 70 ? "auto" : "hidden", // Show scrollbar if height exceeds 75px
             }}
             rows={1} // Start with 1 row
           />
