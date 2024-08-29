@@ -83,7 +83,7 @@ const Chat = () => {
           />
           <img src={send_logo} alt="send_logo" className="w-6 cursor-pointer" />
           <div className=" relative w-6 cursor-pointer">
-            <input type="file" id="submit file" className=" opacity-0 absolute cursor-pointer " />
+            <input type="file" id="submit file" className=" absolute inset-0 opacity-0 cursor-pointer " />
             <img src={fileSendLogo} alt="send_logo" />
           </div>
           {/* <img
