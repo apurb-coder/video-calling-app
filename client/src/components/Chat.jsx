@@ -44,7 +44,10 @@ const Chat = () => {
     <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
       <div className="p-2 flex space-x-5 items-center bg-white">
         {/* <p className="font-medium">Participants</p> */}
-        <div className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-2 px-4 rounded-full space-x-1 hover:cursor-pointer" onClick={handleWhiteBoardClick}>
+        <div
+          className="flex font-medium text-[#0060FF] bg-[#DFEBFF] text-xs py-2 px-4 rounded-full space-x-1 hover:cursor-pointer"
+          onClick={handleWhiteBoardClick}
+        >
           <p>White Board</p>
           <img src={user_add} alt="user_add" className="w-3" />
         </div>
@@ -71,6 +74,12 @@ const Chat = () => {
             onChange={(e) => setInputText(e.target.value)}
             value={inputText}
             className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none emojiRender"
+            style={{
+              height: `${Math.min(inputText.split("\n").length * 20, 150)}px`, // Adjust the height dynamically, capping at 150px
+              overflowY:
+                inputText.split("\n").length * 20 > 150 ? "auto" : "hidden", // Show scrollbar if height exceeds 150px
+            }}
+            rows={1} // Start with 1 row
           />
           <img src={send_logo} alt="send_logo" className="w-6 cursor-pointer" />
           <img
