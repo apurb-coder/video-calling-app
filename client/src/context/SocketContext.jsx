@@ -1,4 +1,11 @@
-import { createContext, useContext, useMemo, useState, useEffect, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import { io } from "socket.io-client";
 import Peer from "peerjs";
 import { useAppContext } from "./AppContext.jsx";
@@ -17,8 +24,9 @@ export const useSocket = () => {
 
 export const SocketProvider = ({ children }) => {
   const [peer, setPeer] = useState(null);
-  const {streams, setStreams} = useAppContext();
+  const { streams, setStreams } = useAppContext();
   const { roomID, username, setMyPeerID } = useAppContext();
+  const [isScreenShareOn, setIsScreenShareOn] = useState(false);
 
   const socket = useMemo(
     () =>
@@ -27,7 +35,7 @@ export const SocketProvider = ({ children }) => {
       }),
     []
   );
-  
+
   // useRef is generally used as a flag in react js, it doesnt cause re-rendering.
   // Even if any componenets re-renders "useRef" value stays
   const isPeerSet = useRef(false);
@@ -50,7 +58,7 @@ export const SocketProvider = ({ children }) => {
       },
     });
     console.log("user: " + username);
-    
+
     myPeer.on("open", (peerID) => {
       console.log(`Your peerID is ${peerID}`);
       socket.emit("joinRoom", { username, room_id: roomID, peerID: peerID });
@@ -66,49 +74,76 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (!peer) return;
 
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        window.localStream = stream;
-        //handle incomming calls
-        peer.on("call", (call) => {
-          console.log(`Incomming Stream from ${call.peer}`);
+    const handleIncomingCall = (call) => {
+      console.log(`Incoming Stream from ${call.peer}`);
 
-          // Check if the peerID is already present in the streams
-          if (!streams[call.peer]) {
-            call.answer(stream);
-            call.on("stream", (remoteStream) => {
-              console.log(`Received stream from: ${call.peer}`);
-              setStreams((prevStreams) => ({
-                ...prevStreams,
-                [call.peer]: remoteStream,
-              }));
-            });
-          }
+      // Check if the peerID is already present in the streams
+      if (!streams[call.peer]) {
+        call.answer(window.localStream); // Answer the call with the current stream
+        call.on("stream", (remoteStream) => {
+          console.log(`Received stream from: ${call.peer}`);
+          setStreams((prevStreams) => ({
+            ...prevStreams,
+            [call.peer]: remoteStream,
+          }));
         });
-
-        socket.on("user-joined-meeting", ({ peerID, room_topic }) => {
-          console.log(`User joined meeting: ${peerID}`);
-          console.log(`Room Topic: ${room_topic}`);
-          sessionStorage.setItem("topic",room_topic)
-          // call users iwth peerID
-          // peerID: is the ID revived from client side from peerjs
-          const call = peer.call(peerID, stream);
-          call.on("stream", (remoteStream) => {
-            console.log(`Received stream from: ${peerID}`);
-            setStreams((prevStreams) => ({
-              ...prevStreams,
-              [peerID]: remoteStream,
-            }));
-          });
-        });
-      })
-      .catch((error) => console.error("Error accessing media devices:", error));
-
-    return () => {
-      socket.off("user-joined-meeting");
+      }
     };
-  }, [peer]);
+
+    const handleUserJoinedMeeting = ({ peerID, room_topic }) => {
+      console.log(`User joined meeting: ${peerID}`);
+      console.log(`Room Topic: ${room_topic}`);
+      sessionStorage.setItem("topic", room_topic);
+
+      // Call the user who just joined with the current stream
+      const call = peer.call(peerID, window.localStream);
+      console.log("Sending stream to peerID: " + peerID);
+      call.on("stream", (remoteStream) => {
+        console.log(`Received stream from: ${peerID}`);
+        setStreams((prevStreams) => ({
+          ...prevStreams,
+          [peerID]: remoteStream,
+        }));
+      });
+    };
+
+    // Switch between screen sharing and camera video/audio streaming
+    if (isScreenShareOn) {
+      navigator.mediaDevices
+        .getDisplayMedia({ video: true, audio: true })
+        .then((stream) => {
+          if (window.localStream) {
+            window.localStream.getTracks().forEach((track) => track.stop()); // stop previous tracks
+          }
+          window.localStream = stream;
+          peer.on("call", handleIncomingCall);// 1st add "CALL" event listener then invoke CALL event
+          socket.on("user-joined-meeting", handleUserJoinedMeeting);
+        })
+        .catch((error) =>
+          console.error("Error accessing display media:", error)
+        );
+    } else {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          if (window.localStream) {
+            window.localStream.getTracks().forEach((track) => track.stop()); // stop previous tracks
+          }
+          window.localStream = stream;
+          peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
+          socket.on("user-joined-meeting", handleUserJoinedMeeting);
+        })
+        .catch((error) =>
+          console.error("Error accessing media devices:", error)
+        );
+    }
+
+    // Cleanup function to remove event listeners
+    return () => {
+      peer.off("call", handleIncomingCall);
+      socket.off("user-joined-meeting", handleUserJoinedMeeting);
+    };
+  }, [peer, isScreenShareOn, streams, setStreams]);
 
   const joinRoomHandle = (isNewRoom = false) => {
     if (!peer) {
@@ -117,7 +152,7 @@ export const SocketProvider = ({ children }) => {
     }
     const peerID = peer.id;
     if (isNewRoom) {
-      const topic = sessionStorage.getItem("topic")
+      const topic = sessionStorage.getItem("topic");
       socket.emit("createRoom", {
         username: username,
         room_id: roomID,
@@ -134,7 +169,14 @@ export const SocketProvider = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ socket, peer, streams, joinRoomHandle}}
+      value={{
+        socket,
+        peer,
+        streams,
+        joinRoomHandle,
+        isScreenShareOn,
+        setIsScreenShareOn,
+      }}
     >
       {children}
     </SocketContext.Provider>

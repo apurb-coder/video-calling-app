@@ -1,10 +1,13 @@
 import React, { useState, useRef } from "react";
+import { useSocket } from "../context/SocketContext.jsx";
 import microPhoneIcon from "../assets/microphone-2.svg";
 import videoIcon from "../assets/video.svg";
 import screenShareIcon from "../assets/send-square.svg";
 import recordMeetIcon from "../assets/Group 33.svg";
 
 const Controls = () => {
+  const { setIsScreenShareOn } = useSocket();
+
   // For Screen Recording
   const [isRecording, setIsRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -58,7 +61,7 @@ const Controls = () => {
             <img src={videoIcon} alt="videoIcon" className="w-5 h-5" />
           </div>
           {/* Share Screen */}
-          <div className="bg-[#DFEBFF] p-2 rounded-full cursor-pointer">
+          <div className="bg-[#DFEBFF] p-2 rounded-full cursor-pointer" onClick={(e)=>{setIsScreenShareOn((prev) => !prev);}}>
             <img src={screenShareIcon} alt="videoIcon" className="w-5 h-5" />
           </div>
           {/* Record Meet */}
