@@ -16,3 +16,13 @@
   font-family: "Noto Color Emoji", sans-serif,monospace,arial;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb {
+  background: #c1c5cd;
+  border-radius: 10px;
+}
+
