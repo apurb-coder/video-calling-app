@@ -16,7 +16,8 @@ const Controls = () => {
 
   // Start Screen Recording
   const startRecording = async () => {
-    
+    // clean any previously recorded chunks
+    setRecordedChunks([]);
     const stream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
       audio: true,
@@ -27,9 +28,9 @@ const Controls = () => {
         setRecordedChunks((prev) => [...prev, event.data]);
       }
     };
-    mediaRecorderRef.current.onstop = () =>{
+    mediaRecorderRef.current.onstop = () => {
       setDoneRecording(true);
-    }
+    };
     mediaRecorderRef.current.start();
   };
   // Stop Screen Recording
@@ -44,15 +45,14 @@ const Controls = () => {
     a.download = "meeting-recording.webm";
     a.click();
   };
-  const handleRecording = () =>{
-    if(doneRecording){
+  const handleRecording = () => {
+    if (doneRecording) {
       stopRecording();
       setDoneRecording(false);
+    } else {
+      startRecording();
     }
-    else{
-      startRecording()
-    }
-  }
+  };
   return (
     <div className="flex flex-col h-[15%] items-center justify-center fixed bottom-0 left-0 right-[26.3125rem]">
       <div className="flex relative w-full items-center justify-center">
