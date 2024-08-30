@@ -16,6 +16,7 @@ const Controls = () => {
 
   // Start Screen Recording
   const startRecording = async () => {
+    
     const stream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
       audio: true,
@@ -41,9 +42,6 @@ const Controls = () => {
     a.href = url;
     a.download = "meeting-recording.webm";
     a.click();
-
-    //clean up recorded chunks
-    setRecordedChunks([]);
   };
   const handleRecording = () =>{
     if(isRecording){
