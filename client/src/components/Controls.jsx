@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useSocket } from "../context/SocketContext.jsx";
-import { FaStop } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa6";
 import microPhoneIcon from "../assets/microphone-2.svg";
 import videoIcon from "../assets/video.svg";
 import screenShareIcon from "../assets/send-square.svg";
@@ -10,7 +10,7 @@ const Controls = () => {
   const { setIsScreenShareOn } = useSocket();
 
   // For Screen Recording
-  const [isRecording, setIsRecording] = useState(false);
+  const [doneRecording, setDoneRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const mediaRecorderRef = useRef(null);
 
@@ -27,13 +27,14 @@ const Controls = () => {
         setRecordedChunks((prev) => [...prev, event.data]);
       }
     };
+    mediaRecorderRef.current.onstop = () =>{
+      setDoneRecording(true);
+    }
     mediaRecorderRef.current.start();
-    setIsRecording(true);
   };
   // Stop Screen Recording
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
-    setIsRecording(false);
     const blob = new Blob(recordedChunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
 
@@ -44,12 +45,11 @@ const Controls = () => {
     a.click();
   };
   const handleRecording = () =>{
-    if(isRecording){
-      setIsRecording(false);
+    if(doneRecording){
       stopRecording();
+      setDoneRecording(false);
     }
     else{
-      setIsRecording(true);
       startRecording()
     }
   }
@@ -82,8 +82,8 @@ const Controls = () => {
             onClick={handleRecording}
             ref={mediaRecorderRef}
           >
-            {isRecording ? (
-              <FaStop className="w-5 h-5 text-[#EB5757]" />
+            {doneRecording ? (
+              <FaDownload className="w-5 h-5 text-[#EB5757]" />
             ) : (
               <img src={recordMeetIcon} alt="videoIcon" className="w-5 h-5" />
             )}
