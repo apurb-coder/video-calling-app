@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useSocket } from "../context/SocketContext.jsx";
+import { FaStop } from "react-icons/fa";
 import microPhoneIcon from "../assets/microphone-2.svg";
 import videoIcon from "../assets/video.svg";
 import screenShareIcon from "../assets/send-square.svg";
@@ -44,6 +45,16 @@ const Controls = () => {
     //clean up recorded chunks
     setRecordedChunks([]);
   };
+  const handleRecording = () =>{
+    if(isRecording){
+      setIsRecording(false);
+      stopRecording();
+    }
+    else{
+      setIsRecording(true);
+      startRecording()
+    }
+  }
   return (
     <div className="flex flex-col h-[15%] items-center justify-center fixed bottom-0 left-0 right-[26.3125rem]">
       <div className="flex relative w-full items-center justify-center">
@@ -61,12 +72,23 @@ const Controls = () => {
             <img src={videoIcon} alt="videoIcon" className="w-5 h-5" />
           </div>
           {/* Share Screen */}
-          <div className="bg-[#DFEBFF] p-2 rounded-full cursor-pointer" onClick={(e)=>{setIsScreenShareOn((prev) => !prev);}}>
+          <div
+            className="bg-[#DFEBFF] p-2 rounded-full cursor-pointer"
+            onClick={(e) => setIsScreenShareOn((prev) => !prev)}
+          >
             <img src={screenShareIcon} alt="videoIcon" className="w-5 h-5" />
           </div>
           {/* Record Meet */}
-          <div className="bg-[#f1f1f1] p-2 rounded-full cursor-pointer">
-            <img src={recordMeetIcon} alt="videoIcon" className="w-5 h-5" />
+          <div
+            className="bg-[#f1f1f1] p-2 rounded-full cursor-pointer"
+            onClick={handleRecording}
+            ref={mediaRecorderRef}
+          >
+            {isRecording ? (
+              <FaStop className="w-5 h-5 text-[#EB5757]" />
+            ) : (
+              <img src={recordMeetIcon} alt="videoIcon" className="w-5 h-5" />
+            )}
           </div>
         </div>
         {/* End Call */}

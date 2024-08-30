@@ -136,7 +136,7 @@ export const SocketProvider = ({ children }) => {
           }
           window.localStream = stream;
 
-          // event Listener for when the screen sharing stream ends
+          // // event Listener for when the screen sharing stream ends
           stream
             .getVideoTracks()[0]
             .addEventListener("ended", switchToCameraStream);
