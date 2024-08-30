@@ -4,14 +4,32 @@ import { useSocket } from "../context/SocketContext.jsx";
 
 const VideoGrid = () => {
   const { streams, roomID, username, setMyPeerID } = useAppContext();
-  const { localStream, isScreenShareOn } = useSocket();
+  const { isScreenShareOn } = useSocket();
   const videoRef = useRef(null);
 
   useEffect(() => {
-    //Request Screen share video stream
-    const startCameraStream = async () => {
+    // Request Camera stream
+    const startCameraVideoStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+
+        // Handle other setup, like sending stream over socket, etc.
+      } catch (error) {
+        console.error("Error accessing media devices:", error);
+        // Handle error, e.g., notify the user or fallback
+      }
+    };
+    //Request Screen share video stream
+    const startScreenShareVideoStream = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
           audio: true,
         });
@@ -22,14 +40,13 @@ const VideoGrid = () => {
         console.log("Error Accessing media devices:", error);
       }
     };
+
     if (isScreenShareOn) {
-      if (videoRef.current && localStream) {
-        videoRef.current.srcObject = localStream;
-      }
+      startScreenShareVideoStream();
     } else {
-      startCameraStream();
+      startCameraVideoStream();
     }
-  }, [localStream, isScreenShareOn]);
+  }, [isScreenShareOn]);
 
   return (
     <>
