@@ -139,7 +139,7 @@ export const SocketProvider = ({ children }) => {
           setScreenShareStream(stream);
           // event Listener for when the screen sharing stream ends
           stream
-            .getVideoTracks()[0]
+            .getTracks()[0]
             .addEventListener("ended", switchToCameraStream);
           peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
           socket.on("user-joined-meeting", handleUserJoinedMeeting);
