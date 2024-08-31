@@ -27,6 +27,8 @@ export const SocketProvider = ({ children }) => {
   const { streams, setStreams } = useAppContext();
   const { roomID, username, setMyPeerID } = useAppContext();
   const [isScreenShareOn, setIsScreenShareOn] = useState(false);
+  const [screenShareStream, setScreenShareStream] = useState(false);
+
   const socket = useMemo(
     () =>
       io(BACKEND_URL, {
@@ -134,7 +136,7 @@ export const SocketProvider = ({ children }) => {
             window.localStream.getTracks().forEach((track) => track.stop()); // stop previous tracks
           }
           window.localStream = stream;
-
+          setScreenShareStream(stream);
           // event Listener for when the screen sharing stream ends
           stream
             .getVideoTracks()[0]
@@ -188,6 +190,7 @@ export const SocketProvider = ({ children }) => {
         joinRoomHandle,
         isScreenShareOn,
         setIsScreenShareOn,
+        screenShareStream
       }}
     >
       {children}
