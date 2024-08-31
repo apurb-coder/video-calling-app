@@ -20,26 +20,81 @@ export const ChatProvider = ({children})=>{
 
     // new user joined the meeting chat
     socket.on("user-joined-meeting", ({username})=>{
-        setChats((prevChats) => [...prevChats, {
+        setChats((prevChats) => [
+          ...prevChats,
+          {
             type: "info",
-            text: `${username} joined the meeting`,
-            pos: "center"
-
-        }]);
+            message: `${username} joined the meeting`,
+            pos: "center",
+          },
+        ]);
     });
     // user left the meeting chat
     socket.on("user-left-meeting",({username})=>{
-        setChats((prevChats) => [...prevChats, {
+        setChats((prevChats) => [
+          ...prevChats,
+          {
             type: "info",
-            text: `${username} left the meeting`,
-            pos: "center"
-        }])
+            message: `${username} left the meeting`,
+            pos: "center",
+          },
+        ]);
     });
     // on receiving new message
-    socket.on("new-incomming-message");
-    return(
-        <ChatContext.Provider value={{/* chat state */}}>
-            {children}
-        </ChatContext.Provider>
+    socket.on("new-incomming-message", ({ username, message, type }) => {
+      if (type === "text") {
+        setChats((prevChats) => [
+          ...prevChats,
+          {
+            type: "text",
+            message: message,
+            pos: "left",
+            username: username,
+          },
+        ]);
+      }
+      if(type === "file"){
+        setChats((prevChats) => [
+          ...prevChats,
+          {
+            type: "file",
+            message: "",
+            pos: "left",
+            file: message,
+            username: username,
+          },
+        ]);
+      }
+    });
+    
+    // can retrive a nth word from a sentence
+    const word = (sentence,index)=>{
+        const words = sentence.trim().split(" ");
+        return words[index] || "";
+    }
+    //TODO: cmd for meet chat
+    const exeCommand = ()=>{
+
+    }
+
+    // send a message
+    const sendMessage=(e)=>{
+        const myUsername = sessionStorage.getItem("username");
+        if(!myUsername) window.location.reload();
+        if(myUsername && yourChat!==""){
+            setChats((prevChats)=>[...prevChats,{
+                type: "text",
+                text: yourChat,
+                pos: "right",
+                username: myUsername
+            }]);
+            socket.emit("send", { type: "text", message: yourChat });
+            setYourChat("");
+        }
+    }
+    return (
+      <ChatContext.Provider value={{ chats, setChats, chats, setChats }}>
+        {children}
+      </ChatContext.Provider>
     );
 }
