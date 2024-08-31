@@ -27,7 +27,6 @@ export const SocketProvider = ({ children }) => {
   const { streams, setStreams } = useAppContext();
   const { roomID, username, setMyPeerID } = useAppContext();
   const [isScreenShareOn, setIsScreenShareOn] = useState(false);
-
   const socket = useMemo(
     () =>
       io(BACKEND_URL, {
