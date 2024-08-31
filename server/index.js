@@ -16,7 +16,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 8000;
 
 // to store data of users
-// Const Users= {peerId:{username:test,SocketId:84274,roomId:472384}}
+// Const Users= {socketID:{username:test,SocketId:84274,roomId:472384}}
 const Users = {};
 // Room data
 /* Rooms = {
@@ -84,7 +84,7 @@ socket.on("leaveRoom", ({ username, room_id }) => {
 
   // Delete user from the Users object
   delete Users[socket.id];
-  socket.broadcast.to(room_id).emit("message", { username: `${username} left` });
+  socket.broadcast.to(room_id).emit("user-left-meeting", { username: username });
   socket.leave(room_id);
 });
   // Create a new Room
@@ -159,14 +159,14 @@ socket.on("leaveRoom", ({ username, room_id }) => {
     if (!roomId) return;
 
     if (message.type === "text") {
-      io.to(roomId).emit("message", {
+      socket.broadcast.to(roomId).emit("new-incomming-message", {
         name: Users[socket.id].username,
         message: message.msg,
         type: "text",
       });
     }
     if (message.type === "file") {
-      io.to(roomId).emit("message", {
+      socket.broadcast.to(roomId).emit("new-incomming-message", {
         name: Users[socket.id].username,
         url: message.url,
         type: "file",
