@@ -41,13 +41,14 @@ export const ChatProvider = ({ children }) => {
     ]);
   });
   // on receiving new message
-  socket.on("new-incomming-message", ({ username, message, type }) => {
+  socket.on("new-incomming-message",async ({ username, message, type }) => {
     if (type === "text") {
+      const linkedMessage = await linkify(message);
       setChats((prevChats) => [
         ...prevChats,
         {
           type: "text",
-          message: message,
+          message: linkedMessage,
           pos: "left",
           username: username,
         },
@@ -81,15 +82,16 @@ export const ChatProvider = ({ children }) => {
   };
 
   // send a message: on send button click execute below function
-  const sendMessage = (e) => {
+  const sendMessage = async(e) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
     if (myUsername && yourChat !== "") {
+      const linkedMessage = await linkify(message);
       setChats((prevChats) => [
         ...prevChats,
         {
           type: "text",
-          text: yourChat,
+          message: linkedMessage,
           pos: "right",
           username: "You",
         },
