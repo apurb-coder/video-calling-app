@@ -33,7 +33,7 @@ const VideoCallingUi = () => {
   }, [roomId]);
   return (
     <div className="flex flex-col h-screen">
-      {roomExist ? (
+      {roomExists ? (
         <>
           <Top roomExits={true} topicExits={true} />
           <div className="flex-grow flex items-center justify-between">
