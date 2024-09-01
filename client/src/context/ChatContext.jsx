@@ -85,13 +85,42 @@ export const ChatProvider = ({ children }) => {
           type: "text",
           text: yourChat,
           pos: "right",
-          username: myUsername,
+          username: "You",
         },
       ]);
-      socket.emit("send", { type: "text", message: yourChat });
+      socket.emit("send", { type: "text", message: yourChat, username:myUsername });
       setYourChat("");
     }
   };
+
+  //handle file(ImageFile) to send
+  const sendFile = (e) =>{
+    const myUsername = sessionStorage.getItem("username");
+    if (!myUsername) window.location.reload();
+    const fileToLoad = e.target.files[0]; // select only one file 
+    if(myUsername && fileToLoad){
+      const fileReader = new FileReader();
+      // adding event listeners before file is loaded
+      fileReader.onload = (file)=>{
+        const dataUrl=file.target.result;
+        setChats((prevChats)=>[...prevChats,{
+          type:"file",
+          message:"",
+          pos:"right",
+          file:dataUrl,
+          username:"You",
+        }])
+        socket.emit("send",{type:"file", message:dataUrl, username:myUsername});
+      }
+      fileReader.readAsDataURL(fileToLoad); // read file as data url
+    }
+  }
+
+  // handle username Mentions
+  const mention =(e)=>{
+    setYourChat("@"+e.target.textContent+" "+yourChat);
+    document.getElementById("chatBox").focus();
+  }
   return (
     <ChatContext.Provider
       value={{ chats, setChats, chats, setChats, exeCommand, sendMessage }}

@@ -154,20 +154,20 @@ socket.on("leaveRoom", ({ username, room_id }) => {
   });
 
   // send message to the room
-  socket.on("send", ({ type, message }) => {
+  socket.on("send", ({ type, message, username }) => {
     const roomId = Users[socket.id].roomId;
     if (!roomId) return;
 
     if (type === "text") {
       socket.broadcast.to(roomId).emit("new-incomming-message", {
-        username: Users[socket.id].username,
+        username: username,
         message: message,
         type: "text",
       });
     }
     if (type === "file") {
       socket.broadcast.to(roomId).emit("new-incomming-message", {
-        username: Users[socket.id].username,
+        username: username,
         url: message,
         type: "file",
       });

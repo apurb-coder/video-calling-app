@@ -71,6 +71,7 @@ const Chat = () => {
       <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
         <div className="relative flex w-[24rem] bg-white px-5 rounded-full py-3 items-center space-x-2">
           <textarea
+            id="chatBox"
             onChange={(e) => setInputText(e.target.value)}
             value={inputText}
             className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none emojiRender"
