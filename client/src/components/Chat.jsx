@@ -54,7 +54,9 @@ const Chat = () => {
       </div>
       <div className="flex-grow">
         <h2 className="p-2 font-medium items-center bg-white">Chats</h2>
-        {/* <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] rounded-md"></div> */}
+        <div className="p-4 font-medium items-center w-[26.3125rem] bg-white rounded-md">
+          {/* TODO: Render the chats here */}
+        </div>
       </div>
       <div className="fixed bottom-20 z-10 w-0" ref={emojiRef}>
         {isEmojiOpen && (
