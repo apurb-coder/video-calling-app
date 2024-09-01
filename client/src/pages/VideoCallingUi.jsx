@@ -13,7 +13,16 @@ const VideoCallingUi = () => {
   const { setRoomID } = useAppContext();
   const { roomId } = useParams();
   const [roomExists, setRoomExists] = useState(false);
+  const username = sessionStorage.getItem('username');
 
+  useEffect(() => {
+    if(!username){
+      const randomUsername = `AnonymousUser-${
+        Math.floor(Math.random() * 10000) + 1
+      }`;
+      sessionStorage.setItem('username', randomUsername);
+    };
+  }, [username])
   useEffect(() => {
     sessionStorage.setItem("roomID", roomId);
     setRoomID(roomId);
