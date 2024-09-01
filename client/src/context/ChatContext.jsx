@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSocket } from "./SocketContext.jsx";
-import openGraph from "open-graph-scraper";// for extracting metadata from URL
-
+import openGraph from "open-graph-scraper"; // for extracting metadata from URL
 
 const ChatContext = createContext(null);
 
@@ -162,43 +161,41 @@ export const ChatProvider = ({ children }) => {
   };
 
   // Fetch metadata for a URL
-  const fetchLinkMetadata=async(url)=>{
-    try{
+  const fetchLinkMetadata = async (url) => {
+    try {
       const options = { url: url };
       const data = await openGraph(options);
-      const {result}=data;
-      const metadata= {
+      const { result } = data;
+      const metadata = {
         title: result?.ogTitle,
         description: result?.ogDescription,
         image: result?.ogImage?.url,
         videoUrl: result?.ogVideo?.url,
-      }
+      };
       return metadata;
-    }catch(error){
+    } catch (error) {
       console.log("Error fetching metadata from URL");
       return undefined;
     }
-  }
+  };
   // Render metadata properly
-  const renderMetadata = (metadata)=>{
+  const renderMetadata = (metadata) => {
     if (!metadata) return "";
 
-    const { title, description } = metadata;
-
-    // return `
-    // <div class="metadata">
-    //   ${image ? `<img src="${image}" alt="Preview Image">` : ""}
-    //   ${title ? `<h4>${title}</h4>` : ""}
-    //   ${description ? `<p>${description}</p>` : ""}
-    //   ${videoUrl ? `<a href="${videoUrl}" target="_blank">Play Video</a>` : ""}
-    // </div>`;
+    const { title, description, image, videoUrl } = metadata;
 
     return `
     <div class="metadata">
+      ${image ? `<img src="${image}" alt="Preview Image">` : ""}
       ${title ? `<h4>${title}</h4>` : ""}
       ${description ? `<p>${description}</p>` : ""}
+      ${
+        videoUrl
+          ? `<iframe width="560" height="315" src="${videoUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+          : ""
+      }
     </div>`;
-  }
+  };
   // handle username Mentions
   const mention = (e) => {
     setYourChat("@" + e.target.textContent + " " + yourChat);
