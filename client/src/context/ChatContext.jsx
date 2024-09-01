@@ -66,6 +66,8 @@ export const ChatProvider = ({ children }) => {
         },
       ]);
     }
+    console.log("Message: "+ message);
+    
   });
 
   // can retrive a nth word from a sentence
@@ -82,16 +84,16 @@ export const ChatProvider = ({ children }) => {
   };
 
   // send a message: on send button click execute below function
-  const sendMessage = async (e) => {
+  const sendMessage = async (message) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
     if (myUsername && yourChat !== "") {
-      // const linkedMessage = await linkify(yourChat);
+      // const linkedMessage = await linkify(message);
       setChats((prevChats) => [
         ...prevChats,
         {
           type: "text",
-          message: yourChat,
+          message: message,
           pos: "right",
           username: "You",
         },
