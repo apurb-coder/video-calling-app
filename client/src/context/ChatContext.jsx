@@ -14,7 +14,7 @@ export const useChat = () => {
 
 export const ChatProvider = ({ children }) => {
   const { socket } = useSocket();
-  // TODO: define all chat logic like send , joined user, linkyfy and other chat logics
+  // define all chat logic like send , joined user, linkyfy and other chat logics
   const [yourChat, setYourChat] = useState("");
   const [chats, setChats] = useState([]);
 
@@ -72,12 +72,15 @@ export const ChatProvider = ({ children }) => {
     const words = sentence.trim().split(" ");
     return words[index] || "";
   };
-  //TODO: cmd for meet chat 
+  //cmd for meet chat : on "yourChat" value change execute this
+  // TODO: add more commands later
   const exeCommand = () => {
-    
+    if(word(yourChat,0)==="/clear"){
+      setChats([]);
+    }
   };
 
-  // send a message
+  // send a message: on send button click execute below function
   const sendMessage = (e) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
@@ -136,7 +139,9 @@ export const ChatProvider = ({ children }) => {
     const arrayOfChat = chat.split(" ");
 
     // Regular expression to match URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urlRegex = new RegExp(
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+    );
 
     // Process each word
     const processedChat = await Promise.all(
