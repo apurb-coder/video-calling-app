@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSocket } from "./SocketContext.jsx";
-import openGraph from "open-graph-scraper";
+import openGraph from "open-graph-scraper";// for extracting metadata from URL
 
 
 const ChatContext = createContext(null);
@@ -165,7 +165,7 @@ export const ChatProvider = ({ children }) => {
   const fetchLinkMetadata=async(url)=>{
     try{
       const options = { url: url };
-      const data = await og(options);
+      const data = await openGraph(options);
       const {result}=data;
       const metadata= {
         title: result?.ogTitle,
