@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useAppContext } from "../context/AppContext.jsx";
 import { useSocket } from "../context/SocketContext.jsx";
+import ReactPlayer from "react-player"; // video player for Reactjs
 
 const VideoGrid = () => {
   const { streams, roomID, username, setMyPeerID } = useAppContext();
@@ -42,6 +43,7 @@ const VideoGrid = () => {
         className="w-80 h-80"
         muted
         autoPlay
+        controls
         playsInline
         ref={videoRef}
       />

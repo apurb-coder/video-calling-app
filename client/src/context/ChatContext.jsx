@@ -41,7 +41,7 @@ export const ChatProvider = ({ children }) => {
     ]);
   });
   // on receiving new message
-  socket.on("new-incomming-message",async ({ username, message, type }) => {
+  socket.on("new-incomming-message", async ({ username, message, type }) => {
     if (type === "text") {
       const linkedMessage = await linkify(message);
       setChats((prevChats) => [
@@ -76,13 +76,13 @@ export const ChatProvider = ({ children }) => {
   //cmd for meet chat : on "yourChat" value change execute this
   // TODO: add more commands later
   const exeCommand = () => {
-    if(word(yourChat,0)==="/clear"){
+    if (word(yourChat, 0) === "/clear") {
       setChats([]);
     }
   };
 
   // send a message: on send button click execute below function
-  const sendMessage = async(e) => {
+  const sendMessage = async (e) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
     if (myUsername && yourChat !== "") {
@@ -135,76 +135,80 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
+  // TODO: Move this logic to server side
   // handle links in the chats: Render tehir metaData properly
-  const linkify = async (chat) => {
-    // Split the chat text by spaces to process each word separately
-    const arrayOfChat = chat.split(" ");
+  // const linkify = async (chat) => {
+  //   // Split the chat text by spaces to process each word separately
+  //   const arrayOfChat = chat.split(" ");
 
-    // Regular expression to match URLs
-    const urlRegex = new RegExp(
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
-    );
+  //   // Regular expression to match URLs
+  //   const urlRegex = new RegExp(
+  //     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+  //   );
 
-    // Process each word
-    const processedChat = await Promise.all(
-      arrayOfChat.map(async (word) => {
-        if (word.match(urlRegex)) {
-          // If the word is a URL, fetch metadata
-          const metadata = await fetchLinkMetadata(word);
+  //   // Process each word
+  //   const processedChat = await Promise.all(
+  //     arrayOfChat.map(async (word) => {
+  //       if (word.match(urlRegex)) {
+  //         // If the word is a URL, fetch metadata
+  //         const metadata = await fetchLinkMetadata(word);
 
-          // Construct the HTML for the link and its metadata
-          return `
-        <div class="link-preview">
-          <a href="${word}" target="_blank">${word}</a>
-          ${metadata ? renderMetadata(metadata) : ""}
-        </div>`;
-        } else {
-          // If the word is not a URL, return it as is
-          return word;
-        }
-      })
-    );
+  //         // Construct the HTML for the link and its metadata
+  //         return `
+  //       <div class="link-preview">
+  //         <a href="${word}" target="_blank">${word}</a>
+  //         ${metadata ? renderMetadata(metadata) : ""}
+  //       </div>`;
+  //       } else {
+  //         // If the word is not a URL, return it as is
+  //         return word;
+  //       }
+  //     })
+  //   );
 
-    // Join the processed words back into a string with spaces
-    return processedChat.join(" ");
-  };
+  //   // Join the processed words back into a string with spaces
+  //   return processedChat.join(" ");
+  // };
 
+  // TODO: move this logic to server side
   // Fetch metadata for a URL
-  const fetchLinkMetadata = async (url) => {
-    try {
-      const options = { url: url };
-      const data = await openGraph(options);
-      const { result } = data;
-      const metadata = {
-        title: result?.ogTitle,
-        description: result?.ogDescription,
-        image: result?.ogImage?.url,
-        videoUrl: result?.ogVideo?.url,
-      };
-      return metadata;
-    } catch (error) {
-      console.log("Error fetching metadata from URL");
-      return undefined;
-    }
-  };
-  // Render metadata properly
-  const renderMetadata = (metadata) => {
-    if (!metadata) return "";
+  // const fetchLinkMetadata = async (url) => {
+  //   try {
+  //     const options = { url: url };
+  //     const data = await openGraph(options);
+  //     const { result } = data;
+  //     const metadata = {
+  //       title: result?.ogTitle,
+  //       description: result?.ogDescription,
+  //       image: result?.ogImage?.url,
+  //       videoUrl: result?.ogVideo?.url,
+  //     };
+  //     return metadata;
+  //   } catch (error) {
+  //     console.log("Error fetching metadata from URL");
+  //     return undefined;
+  //   }
+  // };
+  
+  //TODO: Move this logic to server side
+  //Render metadata properly
+  // const renderMetadata = (metadata) => {
+  //   if (!metadata) return "";
 
-    const { title, description, image, videoUrl } = metadata;
+  //   const { title, description, image, videoUrl } = metadata;
 
-    return `
-    <div class="metadata">
-      ${image ? `<img src="${image}" alt="Preview Image">` : ""}
-      ${title ? `<h4>${title}</h4>` : ""}
-      ${description ? `<p>${description}</p>` : ""}
-      ${
-        videoUrl
-          ? `<iframe width="560" height="315" src="${videoUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
-          : ""
-      }
-    </div>`;
-  };
+  //   return `
+  //   <div class="metadata">
+  //     ${image ? `<img src="${image}" alt="Preview Image">` : ""}
+  //     ${title ? `<h4>${title}</h4>` : ""}
+  //     ${description ? `<p>${description}</p>` : ""}
+  //     ${
+  //       videoUrl
+  //         ? `<iframe width="560" height="315" src="${videoUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+  //         : ""
+  //     }
+  //   </div>`;
+  // };
   // handle username Mentions
   const mention = (e) => {
     setYourChat("@" + e.target.textContent + " " + yourChat);
@@ -213,8 +217,8 @@ export const ChatProvider = ({ children }) => {
   return (
     <ChatContext.Provider
       value={{
-        chats,
-        setChats,
+        yourChat,
+        setYourChat,
         chats,
         setChats,
         exeCommand,
