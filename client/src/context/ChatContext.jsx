@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSocket } from "./SocketContext.jsx";
-import openGraph from "open-graph-scraper"; // for extracting metadata from URL
+// import openGraph from "open-graph-scraper"; // for extracting metadata from URL
 
 const ChatContext = createContext(null);
 
@@ -43,12 +43,12 @@ export const ChatProvider = ({ children }) => {
   // on receiving new message
   socket.on("new-incomming-message", async ({ username, message, type }) => {
     if (type === "text") {
-      const linkedMessage = await linkify(message);
+      // const linkedMessage = await linkify(message);
       setChats((prevChats) => [
         ...prevChats,
         {
           type: "text",
-          message: linkedMessage,
+          message: message,
           pos: "left",
           username: username,
         },
@@ -86,12 +86,12 @@ export const ChatProvider = ({ children }) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
     if (myUsername && yourChat !== "") {
-      const linkedMessage = await linkify(message);
+      // const linkedMessage = await linkify(yourChat);
       setChats((prevChats) => [
         ...prevChats,
         {
           type: "text",
-          message: linkedMessage,
+          message: yourChat,
           pos: "right",
           username: "You",
         },
@@ -189,7 +189,7 @@ export const ChatProvider = ({ children }) => {
   //     return undefined;
   //   }
   // };
-  
+
   //TODO: Move this logic to server side
   //Render metadata properly
   // const renderMetadata = (metadata) => {
@@ -224,7 +224,7 @@ export const ChatProvider = ({ children }) => {
         exeCommand,
         sendMessage,
         sendFile,
-        linkify,
+        // linkify,
         mention,
       }}
     >
