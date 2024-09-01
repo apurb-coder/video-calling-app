@@ -43,8 +43,8 @@ export const fetchLinkMetadata = async (url) => {
     const metadata = {
       title: result?.ogTitle,
       description: result?.ogDescription,
-      image: result?.ogImage?.url,
-      videoUrl: result?.ogVideo?.url,
+      image: result?.ogImage[0]?.url,
+      videoUrl: result?.ogVideo[0]?.url,
     };
     return metadata;
   } catch (error) {
