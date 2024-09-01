@@ -72,8 +72,10 @@ export const ChatProvider = ({ children }) => {
     const words = sentence.trim().split(" ");
     return words[index] || "";
   };
-  //TODO: cmd for meet chat
-  const exeCommand = () => {};
+  //TODO: cmd for meet chat 
+  const exeCommand = () => {
+    
+  };
 
   // send a message
   const sendMessage = (e) => {
