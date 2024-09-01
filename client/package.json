@@ -13,7 +13,6 @@
     "@tldraw/tldraw": "^2.4.5",
     "axios": "^1.7.5",
     "emoji-picker-react": "^4.11.1",
-    "open-graph-scraper": "^6.8.1",
     "peerjs": "^1.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

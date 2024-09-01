@@ -2,7 +2,7 @@ import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
-import { log } from "console";
+import { linkify } from "./ExtractURLMetadata.js";
 
 const app = express();
 app.use(
@@ -54,39 +54,52 @@ app.get("/topic", (req, res) => {
   } else {
     res.status(404).json({ message: "Room not found" });
   }
-})
+});
 
+// Extract URL metadata
+app.get("/extracturlmetadata", async (req, res) => {
+  try {
+    const chat = req?.body?.data;
+    const responseData = await linkify(chat);
+    res.status(200).json({ message: responseData});
+  } catch (err) {
+    console.log("Error: " + err);
+    res.status(500).json({ message: "Failed to extract URL metadata" });
+  }
+});
 //socket.io implementation
 io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
   console.log(`Connected User:${socket.id}`);
 
-socket.on("leaveRoom", ({ username, room_id }) => {
-  console.log(`User Disconnected:${socket.id}`);
+  socket.on("leaveRoom", ({ username, room_id }) => {
+    console.log(`User Disconnected:${socket.id}`);
 
-  // Retrieve roomId before deleting the user from Users
-  const { roomId } = Users[socket.id] || {};
+    // Retrieve roomId before deleting the user from Users
+    const { roomId } = Users[socket.id] || {};
 
-  if (roomId && Rooms[roomId]) {
-    // Find the index of the username in the Active_users array
-    const userIndex = Rooms[roomId].Active_users.indexOf(username);
+    if (roomId && Rooms[roomId]) {
+      // Find the index of the username in the Active_users array
+      const userIndex = Rooms[roomId].Active_users.indexOf(username);
 
-    if (userIndex !== -1) {
-      // Remove the user from the Active_users array
-      Rooms[roomId].Active_users.splice(userIndex, 1);
+      if (userIndex !== -1) {
+        // Remove the user from the Active_users array
+        Rooms[roomId].Active_users.splice(userIndex, 1);
+      }
+
+      // Optionally, delete the room if no active users remain
+      if (Rooms[roomId].Active_users.length === 0) {
+        delete Rooms[roomId];
+      }
     }
 
-    // Optionally, delete the room if no active users remain
-    if (Rooms[roomId].Active_users.length === 0) {
-      delete Rooms[roomId];
-    }
-  }
-
-  // Delete user from the Users object
-  delete Users[socket.id];
-  socket.broadcast.to(room_id).emit("user-left-meeting", { username: username });
-  socket.leave(room_id);
-});
+    // Delete user from the Users object
+    delete Users[socket.id];
+    socket.broadcast
+      .to(room_id)
+      .emit("user-left-meeting", { username: username });
+    socket.leave(room_id);
+  });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
@@ -130,7 +143,7 @@ socket.on("leaveRoom", ({ username, room_id }) => {
 
       return;
     }
-    console.log(`Received joinRoom with peerID: ${peerID}`); 
+    console.log(`Received joinRoom with peerID: ${peerID}`);
     socket.join(room_id);
     console.log(`${username} joined room ${room_id}`);
 
