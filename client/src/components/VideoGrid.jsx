@@ -43,7 +43,6 @@ const VideoGrid = () => {
         className="w-80 h-80"
         muted
         autoPlay
-        controls
         playsInline
         ref={videoRef}
       />
