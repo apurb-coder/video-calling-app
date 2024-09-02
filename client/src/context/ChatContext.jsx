@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSocket } from "./SocketContext.jsx";
 import { useAppContext } from "./AppContext.jsx";
-// import openGraph from "open-graph-scraper"; // for extracting metadata from URL
+import Compressor from "compressorjs"; // for image compression
 
 const ChatContext = createContext(null);
 
@@ -19,33 +19,33 @@ export const ChatProvider = ({ children }) => {
   // define all chat logic like send , joined user, linkyfy and other chat logics
   const [yourChat, setYourChat] = useState("");
   const [chats, setChats] = useState([]);
-  useEffect(()=>{
-     if (!socket) return;
-     const handleUserJoinedMeeting = ({ username }) => {
-       setChats((prevChats) => [
-         ...prevChats,
-         {
-           type: "info",
-           message: `${username} joined the meeting`,
-           pos: "center",
-         },
-       ]);
-     };
-     const handleMessageLeftMeeting = ({ username }) => {
-       setChats((prevChats) => [
-         ...prevChats,
-         {
-           type: "info",
-           message: `${username} left the meeting`,
-           pos: "center",
-         },
-       ]);
-     };
-     socket.on("user-joined-meeting", handleUserJoinedMeeting);
-     // user left the meeting chat
-     socket.on("user-left-meeting", handleMessageLeftMeeting);
-     return
-  },[socket])
+  useEffect(() => {
+    if (!socket) return;
+    const handleUserJoinedMeeting = ({ username }) => {
+      setChats((prevChats) => [
+        ...prevChats,
+        {
+          type: "info",
+          message: `${username} joined the meeting`,
+          pos: "center",
+        },
+      ]);
+    };
+    const handleMessageLeftMeeting = ({ username }) => {
+      setChats((prevChats) => [
+        ...prevChats,
+        {
+          type: "info",
+          message: `${username} left the meeting`,
+          pos: "center",
+        },
+      ]);
+    };
+    socket.on("user-joined-meeting", handleUserJoinedMeeting);
+    // user left the meeting chat
+    socket.on("user-left-meeting", handleMessageLeftMeeting);
+    return;
+  }, [socket]);
   useEffect(() => {
     if (!socket) return;
     const handleMessage = async ({ username, message, type, timeStamp }) => {
@@ -78,7 +78,6 @@ export const ChatProvider = ({ children }) => {
       console.log("Message: " + message);
     };
     socket.on("new-incomming-message", handleMessage);
-    
 
     // If you don't clean up you will receive same msg multiple times.
     return () => {
@@ -124,36 +123,75 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  //BUG: image not being receive on client side
   //handle file(ImageFile) to send
   const sendFile = (e) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
     const fileToLoad = e.target.files[0]; // select only one file
+
     if (myUsername && fileToLoad) {
-      const fileReader = new FileReader();
-      // adding event listeners before file is loaded
-      fileReader.onload = (file) => {
-        const dataUrl = file.target.result;
-        setChats((prevChats) => [
-          ...prevChats,
-          {
-            type: "file",
-            message: "",
-            pos: "right",
-            file: dataUrl,
-            username: "You",
-            timeStamp: currentTime,
-          },
-        ]);
-        socket.emit("send", {
-          type: "file",
-          message: dataUrl,
-          username: myUsername,
-          timeStamp: currentTime,
-        });
-      };
-      fileReader.readAsDataURL(fileToLoad); // read file as data url
+      console.log(`Original file size: ${fileToLoad.size / 1024 / 1024} MB`);
+
+      // Increase initial file size limit
+      if (fileToLoad.size > 10 * 1024 * 1024) {
+        // 10MB limit
+        alert("File is too large. Please select a file smaller than 10MB.");
+        return;
+      }
+
+      new Compressor(fileToLoad, {
+        quality: 0.2, // Keep the lower quality setting
+        maxWidth: 1600, // Increase max dimensions
+        maxHeight: 1600,
+        success(compressedImageFile) {
+          console.log(
+            `Compressed file size: ${compressedImageFile.size / 1024 / 1024} MB`
+          );
+
+          const fileReader = new FileReader();
+          fileReader.onloadend = () => {
+            const dataUrl = fileReader.result;
+            console.log(`Data URL length: ${dataUrl.length} bytes`);
+
+            // Increase the size limit for compressed files
+            if (dataUrl.length > 2 * 1024 * 1024) {
+              // 2MB limit after compression
+              alert(`Compressed file is ${(
+                dataUrl.length /
+                1024 /
+                1024
+              ).toFixed(2)}MB. 
+                     This exceeds our 2MB limit. Please try a smaller image.`);
+              return;
+            }
+
+            setChats((prevChats) => [
+              ...prevChats,
+              {
+                type: "file",
+                message: "",
+                pos: "right",
+                file: dataUrl,
+                username: "You",
+                timeStamp: currentTime,
+              },
+            ]);
+
+            // Send the entire file data directly
+            socket.emit("send", {
+              type: "file",
+              message: dataUrl,
+              username: myUsername,
+              timeStamp: currentTime,
+            });
+          };
+          fileReader.readAsDataURL(compressedImageFile);
+        },
+        error(err) {
+          console.error("Error compressing the image:", err.message);
+          alert("Error compressing the image. Please try again.");
+        },
+      });
     }
   };
   // handle username Mentions

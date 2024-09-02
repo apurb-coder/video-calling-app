@@ -67,6 +67,8 @@ app.get("/extracturlmetadata", async (req, res) => {
     res.status(500).json({ message: "Failed to extract URL metadata" });
   }
 });
+
+
 //socket.io implementation
 io.on("connection", (socket) => {
   socket.emit("me", { socketId: socket.id });
