@@ -131,12 +131,6 @@ const Chat = () => {
             onChange={(e) => setYourChat(e.target.value)}
             value={yourChat}
             className="text-[#8D8F98] font-normal bg-[#DFEBFF] h-5 text-sm flex-grow outline-none resize-none emojiRender"
-            style={{
-              height: `${Math.min(yourChat.split("\n").length * 20, 70)}px`, // Adjust the height dynamically, capping at 75px
-              overflowY:
-                yourChat.split("\n").length * 20 > 70 ? "auto" : "hidden", // Show scrollbar if height exceeds 75px
-            }}
-            rows={1} // Start with 1 row
           />
           <img
             src={send_logo}
