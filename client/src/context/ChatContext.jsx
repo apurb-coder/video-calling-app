@@ -123,7 +123,8 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  // Send Image file 
+  // Send Image file
+  // FIXME: FOr now it can only handle image size of 2mb only , increase this limit to 5MB or 10MB
   const sendFile = (e) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
