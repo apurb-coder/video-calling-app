@@ -65,7 +65,7 @@ const Chat = () => {
         <h2 className="p-2 font-medium items-center bg-white text-[#0060FF]">
           Chats
         </h2>
-        <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] max-h-[469.9px]  overflow-y-scroll">
+        <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] max-h-[469.9px]  overflow-y-scroll overflow-x-hidden">
           {/* Render the chats here */}
           {chats.map((chat, index) => {
             if (chat && chat.type === "info") {
@@ -85,6 +85,7 @@ const Chat = () => {
                       <p className="font-medium text-white">{chat.username}</p>
                       <p className="text-white">{chat.timeStamp}</p>
                     </div>
+                    {/* FIXME: When chat side is large make it grow vertically instead of horizontally */}
                     <p className="text-white">{chat.message}</p>
                   </div>
                 </div>
@@ -124,6 +125,7 @@ const Chat = () => {
       </div>
       <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
         <div className="relative flex w-[24rem] bg-[#DFEBFF] px-5 rounded-full py-3 items-center space-x-2">
+          {/* FIXME: When Chat size is large make it grow and show scroll */}
           <textarea
             id="chatBox"
             onChange={(e) => setYourChat(e.target.value)}
