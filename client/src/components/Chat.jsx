@@ -100,7 +100,7 @@ const Chat = () => {
                       <p className="font-medium text-[#0060FF]">
                         {chat.username}
                       </p>
-                      <p>{chat.timeStamp}</p>
+                      <p className="text-[#0060FF]">{chat.timeStamp}</p>
                     </div>
                     <img src={chat.file} className="rounded-lg" />
                   </div>
