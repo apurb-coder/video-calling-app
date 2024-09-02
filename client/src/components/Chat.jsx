@@ -67,6 +67,11 @@ const Chat = () => {
           {/* TODO: Render the chats here */}
           {chats.map((chat, index) => {
             if (chat && chat.type === "info") {
+              return (
+                <div key={index} className="text-center text-gray-500">
+                  {chat.message}
+                </div>
+              );
             } else if (chat && chat.type === "text") {
               return (
                 <div

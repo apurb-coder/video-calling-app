@@ -20,32 +20,28 @@ export const ChatProvider = ({ children }) => {
   const [yourChat, setYourChat] = useState("");
   const [chats, setChats] = useState([]);
 
-  // new user joined the meeting chat
-  socket.on("user-joined-meeting", ({ username }) => {
-    setChats((prevChats) => [
-      ...prevChats,
-      {
-        type: "info",
-        message: `${username} joined the meeting`,
-        pos: "center",
-      },
-    ]);
-  });
-  // user left the meeting chat
-  socket.on("user-left-meeting", ({ username }) => {
-    setChats((prevChats) => [
-      ...prevChats,
-      {
-        type: "info",
-        message: `${username} left the meeting`,
-        pos: "center",
-      },
-    ]);
-  });
-   
   useEffect(() => {
     if (!socket) return;
-    // BUG: 
+    const handleUserJoinedMeeting = ({ username }) => {
+      setChats((prevChats) => [
+        ...prevChats,
+        {
+          type: "info",
+          message: `${username} joined the meeting`,
+          pos: "center",
+        },
+      ]);
+    };
+    const handleMessageLeftMeeting = ({ username }) => {
+      setChats((prevChats) => [
+        ...prevChats,
+        {
+          type: "info",
+          message: `${username} left the meeting`,
+          pos: "center",
+        },
+      ]);
+    };
     const handleMessage = async ({ username, message, type, timeStamp }) => {
       if (type === "text") {
         // const linkedMessage = await linkify(message);
@@ -75,12 +71,16 @@ export const ChatProvider = ({ children }) => {
       }
       console.log("Message: " + message);
     };
-
+    socket.on("user-joined-meeting", handleUserJoinedMeeting);
+    // user left the meeting chat
+    socket.on("user-left-meeting", handleMessageLeftMeeting);
     socket.on("new-incomming-message", handleMessage);
 
     // If you don't clean up you will receive same msg multiple times.
     return () => {
       socket.off("new-incomming-message", handleMessage);
+      socket.off("user-joined-meeting", handleUserJoinedMeeting);
+      socket.off("user-left-meeting", handleMessageLeftMeeting);
     };
   }, [socket]);
 
