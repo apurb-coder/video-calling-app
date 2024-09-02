@@ -39,7 +39,7 @@ const JoinRoom = () => {
           <img src={Logo} alt="logo" />
           <h3 className=" font-semibold text-2xl">ConnectDots</h3>
         </div>
-        {/* TODO: implement conditional rendering */}
+
         <div>
           {joinOption === "" && (
             <div className="space-x-6">
