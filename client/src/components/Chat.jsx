@@ -76,7 +76,7 @@ const Chat = () => {
               return (
                 <div
                   key={index}
-                  className="flex items-center gap-2 w-[20rem] rounded-full bg-[#0060FF] px-4 py-2 text-sm my-2"
+                  className="flex items-center gap-2 w-[20rem] rounded-lg bg-[#0060FF] px-4 py-2 text-sm my-2"
                 >
                   <div className="flex-grow">
                     <div className="flex justify-between">

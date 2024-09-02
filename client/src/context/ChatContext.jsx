@@ -123,7 +123,7 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  //handle file(ImageFile) to send
+  // Send Image file 
   const sendFile = (e) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
@@ -132,17 +132,23 @@ export const ChatProvider = ({ children }) => {
     if (myUsername && fileToLoad) {
       console.log(`Original file size: ${fileToLoad.size / 1024 / 1024} MB`);
 
-      // Increase initial file size limit
-      if (fileToLoad.size > 10 * 1024 * 1024) {
-        // 10MB limit
-        alert("File is too large. Please select a file smaller than 10MB.");
+      // Set maximum file size to 10MB
+      const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
+      if (fileToLoad.size > maxFileSize) {
+        alert(
+          `File is too large. Please select a file smaller than 10MB. Your file is ${(
+            fileToLoad.size /
+            1024 /
+            1024
+          ).toFixed(2)}MB.`
+        );
         return;
       }
 
       new Compressor(fileToLoad, {
-        quality: 0.2, // Keep the lower quality setting
-        maxWidth: 1600, // Increase max dimensions
-        maxHeight: 1600,
+        quality: 0.2, // Increased quality for better image fidelity
+        maxWidth: 2400, // Increased max dimensions for larger images
+        maxHeight: 2400,
         success(compressedImageFile) {
           console.log(
             `Compressed file size: ${compressedImageFile.size / 1024 / 1024} MB`
@@ -153,15 +159,14 @@ export const ChatProvider = ({ children }) => {
             const dataUrl = fileReader.result;
             console.log(`Data URL length: ${dataUrl.length} bytes`);
 
-            // Increase the size limit for compressed files
-            if (dataUrl.length > 2 * 1024 * 1024) {
-              // 2MB limit after compression
+            // Check if the compressed file is still larger than the maximum allowed size
+            if (dataUrl.length > maxFileSize) {
               alert(`Compressed file is ${(
                 dataUrl.length /
                 1024 /
                 1024
               ).toFixed(2)}MB. 
-                     This exceeds our 2MB limit. Please try a smaller image.`);
+                     This exceeds our 10MB limit. Please try a smaller image.`);
               return;
             }
 
