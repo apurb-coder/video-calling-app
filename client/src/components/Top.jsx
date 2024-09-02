@@ -29,7 +29,9 @@ const Top = ({roomExits, topicExits}) => {
         <img src={Logo} alt="logo" className="w-8" />
       </div>
       <div className="flex flex-col justify-center items-center">
-        <h2 className=" text-lg font-semibold">{topicExits? topic: "Topic Invalid"}</h2>
+        <h2 className=" text-lg font-semibold text-[#0060FF]">
+          {topicExits ? topic : "Topic Invalid"}
+        </h2>
         <p className="text-xs text-gray-400 font-semibold">{currentDateTime}</p>
       </div>
       <div
