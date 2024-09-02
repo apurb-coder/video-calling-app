@@ -147,7 +147,7 @@ const Chat = () => {
               accept="image/*"
               id="submit file"
               className=" absolute inset-0 opacity-0 cursor-pointer "
-              onChange={sendFile}
+              onChange={(e)=>{sendFile(e)}}
             />
             <RxImage className="text-xl cursor-pointer text-gray-500/80" />
           </div>

@@ -19,29 +19,35 @@ export const ChatProvider = ({ children }) => {
   // define all chat logic like send , joined user, linkyfy and other chat logics
   const [yourChat, setYourChat] = useState("");
   const [chats, setChats] = useState([]);
-
+  useEffect(()=>{
+     if (!socket) return;
+     const handleUserJoinedMeeting = ({ username }) => {
+       setChats((prevChats) => [
+         ...prevChats,
+         {
+           type: "info",
+           message: `${username} joined the meeting`,
+           pos: "center",
+         },
+       ]);
+     };
+     const handleMessageLeftMeeting = ({ username }) => {
+       setChats((prevChats) => [
+         ...prevChats,
+         {
+           type: "info",
+           message: `${username} left the meeting`,
+           pos: "center",
+         },
+       ]);
+     };
+     socket.on("user-joined-meeting", handleUserJoinedMeeting);
+     // user left the meeting chat
+     socket.on("user-left-meeting", handleMessageLeftMeeting);
+     return
+  },[socket])
   useEffect(() => {
     if (!socket) return;
-    const handleUserJoinedMeeting = ({ username }) => {
-      setChats((prevChats) => [
-        ...prevChats,
-        {
-          type: "info",
-          message: `${username} joined the meeting`,
-          pos: "center",
-        },
-      ]);
-    };
-    const handleMessageLeftMeeting = ({ username }) => {
-      setChats((prevChats) => [
-        ...prevChats,
-        {
-          type: "info",
-          message: `${username} left the meeting`,
-          pos: "center",
-        },
-      ]);
-    };
     const handleMessage = async ({ username, message, type, timeStamp }) => {
       if (type === "text") {
         // const linkedMessage = await linkify(message);
@@ -71,16 +77,12 @@ export const ChatProvider = ({ children }) => {
       }
       console.log("Message: " + message);
     };
-    socket.on("user-joined-meeting", handleUserJoinedMeeting);
-    // user left the meeting chat
-    socket.on("user-left-meeting", handleMessageLeftMeeting);
     socket.on("new-incomming-message", handleMessage);
+    
 
     // If you don't clean up you will receive same msg multiple times.
     return () => {
       socket.off("new-incomming-message", handleMessage);
-      socket.off("user-joined-meeting", handleUserJoinedMeeting);
-      socket.off("user-left-meeting", handleMessageLeftMeeting);
     };
   }, [socket]);
 

@@ -168,7 +168,7 @@ io.on("connection", (socket) => {
 
   // send message to the room
   socket.on("send", ({ type, message, username, timeStamp }) => {
-    const roomId = Users[socket.id].roomId;
+    const roomId = Users[socket.id]?.roomId;
     if (!roomId) return;
 
     if (type === "text") {
@@ -182,7 +182,7 @@ io.on("connection", (socket) => {
     if (type === "file") {
       socket.broadcast.to(roomId).emit("new-incomming-message", {
         username: username,
-        url: message,
+        message: message,
         type: "file",
         timeStamp: timeStamp,
       });
