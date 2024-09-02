@@ -63,8 +63,51 @@ const Chat = () => {
       </div>
       <div className="flex-grow">
         <h2 className="p-2 font-medium items-center bg-white">Chats</h2>
-        <div className="p-4 font-medium items-center w-[26.3125rem] bg-white">
+        <div className="p-4 font-medium items-center w-[26.3125rem] bg-white max-h-[469.9px]  overflow-y-scroll">
           {/* TODO: Render the chats here */}
+          {
+            chats.map((chat,index)=>{
+              if(chat && chat.type ==="info"){
+
+              }
+              else if(chat && chat.type ==="text"){
+                 return (
+                   <div
+                     key={index}
+                     className="flex items-center gap-2 w-[20rem] rounded-full bg-[#0060FF] px-4 py-2 text-sm"
+                   >
+                     <div className="flex-grow">
+                       <div className="flex justify-between">
+                         <p className="font-medium text-white">
+                           {chat.username}
+                         </p>
+                         <p className="text-white">{chat.timeStamp}</p>
+                       </div>
+                       <p className="text-white">{chat.message}</p>
+                     </div>
+                   </div>
+                 );
+              }
+              else if(chat && chat.type ==="file"){
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 w-[20rem] rounded-full bg-[#F7F7F7] px-4 py-2 text-sm"
+                  >
+                    <div className="flex-grow">
+                      <div className="flex justify-evenly">
+                        <p className="font-medium text-[#0060FF]">
+                          {chat.username}
+                        </p>
+                        <p>{chat.timeStamp}</p>
+                      </div>
+                      <img src={chat.message} />
+                    </div>
+                  </div>
+                );
+              }
+            })
+          }
         </div>
       </div>
       <div className="fixed bottom-20 z-10 w-0" ref={emojiRef}>

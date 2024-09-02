@@ -167,7 +167,7 @@ io.on("connection", (socket) => {
   });
 
   // send message to the room
-  socket.on("send", ({ type, message, username }) => {
+  socket.on("send", ({ type, message, username, timeStamp }) => {
     const roomId = Users[socket.id].roomId;
     if (!roomId) return;
 
@@ -176,6 +176,7 @@ io.on("connection", (socket) => {
         username: username,
         message: message,
         type: "text",
+        timeStamp:timeStamp,
       });
     }
     if (type === "file") {
@@ -183,6 +184,7 @@ io.on("connection", (socket) => {
         username: username,
         url: message,
         type: "file",
+        timeStamp: timeStamp,
       });
     }
   });

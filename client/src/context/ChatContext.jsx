@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSocket } from "./SocketContext.jsx";
+import { useAppContext } from "./AppContext.jsx";
 // import openGraph from "open-graph-scraper"; // for extracting metadata from URL
 
 const ChatContext = createContext(null);
@@ -14,6 +15,7 @@ export const useChat = () => {
 
 export const ChatProvider = ({ children }) => {
   const { socket } = useSocket();
+  const { currentTime } = useAppContext();
   // define all chat logic like send , joined user, linkyfy and other chat logics
   const [yourChat, setYourChat] = useState("");
   const [chats, setChats] = useState([]);
@@ -41,34 +43,38 @@ export const ChatProvider = ({ children }) => {
     ]);
   });
   // on receiving new message
-  socket.on("new-incomming-message", async ({ username, message, type }) => {
-    if (type === "text") {
-      // const linkedMessage = await linkify(message);
-      setChats((prevChats) => [
-        ...prevChats,
-        {
-          type: "text",
-          message: message,
-          pos: "left",
-          username: username,
-        },
-      ]);
+  socket.on(
+    "new-incomming-message",
+    async ({ username, message, type, timeStamp }) => {
+      if (type === "text") {
+        // const linkedMessage = await linkify(message);
+        setChats((prevChats) => [
+          ...prevChats,
+          {
+            type: "text",
+            message: message,
+            pos: "left",
+            username: username,
+            timeStamp: timeStamp,
+          },
+        ]);
+      }
+      if (type === "file") {
+        setChats((prevChats) => [
+          ...prevChats,
+          {
+            type: "file",
+            message: "",
+            pos: "left",
+            file: message,
+            username: username,
+            timeStamp: timeStamp,
+          },
+        ]);
+      }
+      console.log("Message: " + message);
     }
-    if (type === "file") {
-      setChats((prevChats) => [
-        ...prevChats,
-        {
-          type: "file",
-          message: "",
-          pos: "left",
-          file: message,
-          username: username,
-        },
-      ]);
-    }
-    console.log("Message: "+ message);
-    
-  });
+  );
 
   // can retrive a nth word from a sentence
   const word = (sentence, index) => {
@@ -88,7 +94,6 @@ export const ChatProvider = ({ children }) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
     if (myUsername && yourChat !== "") {
-      // const linkedMessage = await linkify(message);
       setChats((prevChats) => [
         ...prevChats,
         {
@@ -96,12 +101,14 @@ export const ChatProvider = ({ children }) => {
           message: message,
           pos: "right",
           username: "You",
+          timeStamp: currentTime,
         },
       ]);
       socket.emit("send", {
         type: "text",
         message: yourChat,
         username: myUsername,
+        timeStamp: currentTime,
       });
       setYourChat("");
     }
@@ -125,12 +132,14 @@ export const ChatProvider = ({ children }) => {
             pos: "right",
             file: dataUrl,
             username: "You",
+            timeStamp: currentTime,
           },
         ]);
         socket.emit("send", {
           type: "file",
           message: dataUrl,
           username: myUsername,
+          timeStamp: currentTime,
         });
       };
       fileReader.readAsDataURL(fileToLoad); // read file as data url
