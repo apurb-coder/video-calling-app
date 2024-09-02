@@ -134,10 +134,10 @@ export const ChatProvider = ({ children }) => {
       console.log(`Original file size: ${fileToLoad.size / 1024 / 1024} MB`);
 
       // Set maximum file size to 10MB
-      const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
+      const maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
       if (fileToLoad.size > maxFileSize) {
         alert(
-          `File is too large. Please select a file smaller than 10MB. Your file is ${(
+          `File is too large. Please select a file smaller than 2MB. Your file is ${(
             fileToLoad.size /
             1024 /
             1024
@@ -161,13 +161,13 @@ export const ChatProvider = ({ children }) => {
             console.log(`Data URL length: ${dataUrl.length} bytes`);
 
             // Check if the compressed file is still larger than the maximum allowed size
-            if (dataUrl.length > maxFileSize) {
+            if (dataUrl.length > 1 * 1024 * 1024) {
               alert(`Compressed file is ${(
                 dataUrl.length /
                 1024 /
                 1024
               ).toFixed(2)}MB. 
-                     This exceeds our 10MB limit. Please try a smaller image.`);
+                     This exceeds our 2MB limit. Please try a smaller image.`);
               return;
             }
 
