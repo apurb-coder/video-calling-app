@@ -46,7 +46,7 @@ const VideoGrid = () => {
         playsInline
         ref={videoRef}
       />
-
+      {/* BUG: Other Participants video not showing*/}
       {/* Render videos for each remote stream */}
       {/* {Object.entries(streams).map(([userId, stream]) => (
         <video
