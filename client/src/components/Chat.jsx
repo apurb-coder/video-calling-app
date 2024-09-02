@@ -89,13 +89,13 @@ const Chat = () => {
                   className="flex items-center gap-2 w-[20rem] rounded-full bg-[#F7F7F7] px-4 py-2 text-sm"
                 >
                   <div className="flex-grow">
-                    <div className="flex justify-evenly">
+                    <div className="flex justify-between">
                       <p className="font-medium text-[#0060FF]">
                         {chat.username}
                       </p>
                       <p>{chat.timeStamp}</p>
                     </div>
-                    <img src={chat.file} />
+                    <img src={chat.file} className="rounded-lg"/>
                   </div>
                 </div>
               );
@@ -142,6 +142,7 @@ const Chat = () => {
               accept="image/*"
               id="submit file"
               className=" absolute inset-0 opacity-0 cursor-pointer "
+              onChange={sendFile}
             />
             <RxImage className="text-xl cursor-pointer text-gray-500/80" />
           </div>
