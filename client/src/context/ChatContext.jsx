@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useSocket } from "./SocketContext.jsx";
 import { useAppContext } from "./AppContext.jsx";
 // import openGraph from "open-graph-scraper"; // for extracting metadata from URL
@@ -42,10 +42,11 @@ export const ChatProvider = ({ children }) => {
       },
     ]);
   });
-  //BUG: on receiving new message
-  socket.on(
-    "new-incomming-message",
-    async ({ username, message, type, timeStamp }) => {
+   
+  useEffect(() => {
+    if (!socket) return;
+    // BUG: 
+    const handleMessage = async ({ username, message, type, timeStamp }) => {
       if (type === "text") {
         // const linkedMessage = await linkify(message);
         setChats((prevChats) => [
@@ -73,8 +74,15 @@ export const ChatProvider = ({ children }) => {
         ]);
       }
       console.log("Message: " + message);
-    }
-  );
+    };
+
+    socket.on("new-incomming-message", handleMessage);
+
+    // If you don't clean up you will receive same msg multiple times.
+    return () => {
+      socket.off("new-incomming-message", handleMessage);
+    };
+  }, [socket]);
 
   // can retrive a nth word from a sentence
   const word = (sentence, index) => {
