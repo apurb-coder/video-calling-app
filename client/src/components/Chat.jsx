@@ -50,7 +50,7 @@ const Chat = () => {
     navigate(`/video-call/${roomId}/whiteboard`);
   };
   return (
-    <div className="max-w-[26.3125rem] bg-[#F6F6F6] min-h-[99.99%] flex flex-col">
+    <div className="max-w-[26.3125rem] bg-[#F6F6F6] max-h-screen flex flex-col">
       <div className="p-2 flex space-x-5 items-center bg-white">
         {/* <p className="font-medium">Participants</p> */}
         <div
@@ -62,7 +62,9 @@ const Chat = () => {
         </div>
       </div>
       <div className="flex-grow">
-        <h2 className="p-2 font-medium items-center bg-white">Chats</h2>
+        <h2 className="p-2 font-medium items-center bg-white text-[#0060FF]">
+          Chats
+        </h2>
         <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] max-h-[469.9px]  overflow-y-scroll">
           {/* Render the chats here */}
           {chats.map((chat, index) => {
@@ -91,7 +93,7 @@ const Chat = () => {
               return (
                 <div
                   key={index}
-                  className="flex items-center gap-2 w-[20rem] rounded-full bg-[#F7F7F7] px-4 py-2 text-sm"
+                  className="flex items-center gap-2 w-[20rem] rounded-lg bg-[#F7F7F7] px-4 py-2 text-sm"
                 >
                   <div className="flex-grow">
                     <div className="flex justify-between">
@@ -100,7 +102,7 @@ const Chat = () => {
                       </p>
                       <p>{chat.timeStamp}</p>
                     </div>
-                    <img src={chat.file} className="rounded-lg"/>
+                    <img src={chat.file} className="rounded-lg" />
                   </div>
                 </div>
               );
@@ -121,12 +123,12 @@ const Chat = () => {
         )}
       </div>
       <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
-        <div className="relative flex w-[24rem] bg-white px-5 rounded-full py-3 items-center space-x-2">
+        <div className="relative flex w-[24rem] bg-[#DFEBFF] px-5 rounded-full py-3 items-center space-x-2">
           <textarea
             id="chatBox"
             onChange={(e) => setYourChat(e.target.value)}
             value={yourChat}
-            className="text-[#8D8F98] font-semibold h-5 text-sm flex-grow outline-none resize-none emojiRender"
+            className="text-[#8D8F98] font-normal bg-[#DFEBFF] h-5 text-sm flex-grow outline-none resize-none emojiRender"
             style={{
               height: `${Math.min(yourChat.split("\n").length * 20, 70)}px`, // Adjust the height dynamically, capping at 75px
               overflowY:
@@ -147,7 +149,9 @@ const Chat = () => {
               accept="image/*"
               id="submit file"
               className=" absolute inset-0 opacity-0 cursor-pointer "
-              onChange={(e)=>{sendFile(e)}}
+              onChange={(e) => {
+                sendFile(e);
+              }}
             />
             <RxImage className="text-xl cursor-pointer text-gray-500/80" />
           </div>
