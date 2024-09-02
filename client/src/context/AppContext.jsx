@@ -12,7 +12,7 @@ export const useAppContext = () => {
 };
 
 export const AppContextProvider = ({ children }) => {
-  // TODO: Define All the states used in the App like room_id , user ID, participants list
+  // Define All the states used in the App like room_id , user ID, participants list
   const [streams, setStreams] = useState({});
   const [roomID, setRoomID] = useState("");
   const [username, setUsername] = useState("");
@@ -62,7 +62,7 @@ export const AppContextProvider = ({ children }) => {
   },[sessionStorage])
   // Function : fetch Active Participants list
   const fetchActivePaticipants = () => {
-    // TODO: Implement the logic to fetch active participants based on roomID
+    //Implement the logic to fetch active participants based on roomID
   };
   return (
     <AppContext.Provider

@@ -189,7 +189,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  // TODO: audio State change : implement io.on('audioStateChange')
+  //audio State change : implement io.on('audioStateChange')
   socket.on("audioStateChange", (state) => {
     const roomId = Users[socket.id].roomId;
     if (roomId) {
@@ -199,7 +199,7 @@ io.on("connection", (socket) => {
       });
     }
   });
-  // TODO: video State change : implement io.on('videoStateChange')
+  // video State change : implement io.on('videoStateChange')
   socket.on("videoStateChange", (state) => {
     const roomId = Users[socket.id].roomId;
     if (roomId) {

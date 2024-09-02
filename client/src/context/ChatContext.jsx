@@ -42,7 +42,7 @@ export const ChatProvider = ({ children }) => {
       },
     ]);
   });
-  // on receiving new message
+  //BUG: on receiving new message
   socket.on(
     "new-incomming-message",
     async ({ username, message, type, timeStamp }) => {
