@@ -122,6 +122,7 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
+  //BUG: image not being receive on client side
   //handle file(ImageFile) to send
   const sendFile = (e) => {
     const myUsername = sessionStorage.getItem("username");
