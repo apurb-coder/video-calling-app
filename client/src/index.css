@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: "Fira Code", monospace;
+  font-family: "Fira Code","Noto Color Emoji", sans-serif,monospace,arial;
   line-height: 1.5;
   overflow: hidden;
 }
