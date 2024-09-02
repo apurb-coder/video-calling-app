@@ -78,16 +78,15 @@ const Chat = () => {
               return (
                 <div
                   key={index}
-                  className="flex items-center gap-2 w-[20rem] rounded-lg bg-[#0060FF] px-4 py-2 text-sm my-2"
+                  className="flex flex-col items-start gap-2 rounded-lg bg-[#0060FF] px-4 py-2 text-sm my-2"
                 >
-                  <div className="flex-grow">
-                    <div className="flex justify-between">
-                      <p className="font-medium text-white">{chat.username}</p>
-                      <p className="text-white">{chat.timeStamp}</p>
-                    </div>
-                    {/* FIXME: When chat side is large make it grow vertically instead of horizontally */}
-                    <p className="text-white">{chat.message}</p>
+                  <div className="flex justify-between w-full">
+                    <p className="font-medium text-white">{chat.username}</p>
+                    <p className="text-white">{chat.timeStamp}</p>
                   </div>
+                  <p className="text-white break-words w-full">
+                    {chat.message}
+                  </p>
                 </div>
               );
             } else if (chat && chat.type === "file") {
@@ -125,7 +124,6 @@ const Chat = () => {
       </div>
       <div className="p-4 items-center bg-[#F6F6F6] flex justify-center">
         <div className="relative flex w-[24rem] bg-[#DFEBFF] px-5 rounded-full py-3 items-center space-x-2">
-          {/* FIXME: When Chat size is large make it grow and show scroll */}
           <textarea
             id="chatBox"
             onChange={(e) => setYourChat(e.target.value)}
