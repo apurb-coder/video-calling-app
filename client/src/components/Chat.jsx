@@ -65,7 +65,7 @@ const Chat = () => {
         <h2 className="p-2 font-medium items-center bg-white text-[#0060FF]">
           Chats
         </h2>
-        <div className="p-4 font-medium items-center w-[26.3125rem] bg-[#F6F6F6] max-h-[469.9px]  overflow-y-scroll overflow-x-hidden">
+        <div className="p-4 font-medium items-center w-[26.3125rem] bg-white max-h-[469.9px]  overflow-y-scroll overflow-x-hidden">
           {/* Render the chats here */}
           {chats.map((chat, index) => {
             if (chat && chat.type === "info") {
