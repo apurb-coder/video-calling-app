@@ -50,7 +50,7 @@ const Chat = () => {
     navigate(`/video-call/${roomId}/whiteboard`);
   };
   return (
-    <div className="flex flex-col h-[91.1%] items-center justify-center fixed bottom-0 right-0">
+    <div className="flex flex-col h-[91.1%] justify-center fixed bottom-0 right-0">
       <div className="p-2 flex space-x-5 items-center bg-white">
         {/* <p className="font-medium">Participants</p> */}
         <div
