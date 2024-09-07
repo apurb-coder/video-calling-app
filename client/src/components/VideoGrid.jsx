@@ -48,7 +48,7 @@ const VideoGrid = () => {
       />
       {/* BUG: Other Participants video not showing*/}
       {/* Render videos for each remote stream */}
-      {/* {Object.entries(streams).map(([userId, stream]) => (
+      {Object.entries(streams).map(([userId, stream]) => (
         <video
           key={userId}
           autoPlay
@@ -57,7 +57,7 @@ const VideoGrid = () => {
             if (videoElement) videoElement.srcObject = stream;
           }}
         />
-      ))} */}
+      ))}
     </>
   );
 };
