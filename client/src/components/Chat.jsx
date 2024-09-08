@@ -80,13 +80,35 @@ const Chat = () => {
               return (
                 <div
                   key={index}
-                  className="flex flex-col items-start gap-2 rounded-lg bg-[#0060FF] px-4 py-2 text-sm my-2"
+                  className={`flex flex-col items-start gap-2 rounded-lg bg-[${chat.bgColor}] px-4 py-2 text-sm my-2`}
                 >
                   <div className="flex justify-between w-full">
-                    <p className="font-medium text-white">{chat.username}</p>
-                    <p className="text-white">{chat.timeStamp}</p>
+                    <p
+                      className={`font-medium ${
+                        chat.textColor === "white"
+                          ? "text-white"
+                          : "text-[#0060FF]"
+                      }`}
+                    >
+                      {chat.username}
+                    </p>
+                    <p
+                      className={`${
+                        chat.textColor === "white"
+                          ? "text-white"
+                          : "text-[#0060FF]"
+                      }`}
+                    >
+                      {chat.timeStamp}
+                    </p>
                   </div>
-                  <p className="text-white break-words w-full">
+                  <p
+                    className={`${
+                      chat.textColor === "white"
+                        ? "text-white"
+                        : "text-[#0060FF]"
+                    } break-words w-full`}
+                  >
                     {chat.message}
                   </p>
                 </div>
@@ -95,14 +117,26 @@ const Chat = () => {
               return (
                 <div
                   key={index}
-                  className="flex items-center gap-2 w-[20rem] rounded-lg bg-[#F7F7F7] px-4 py-2 text-sm"
+                  className={`flex items-center gap-2 w-[20rem] rounded-lg bg-[${chat.bgColor}] px-4 py-2 text-sm mb-3`}
                 >
                   <div className="flex-grow">
                     <div className="flex justify-between">
-                      <p className="font-medium text-[#0060FF]">
+                      <p className={`font-medium ${
+                        chat.textColor === "white"
+                          ? "text-white"
+                          : "text-[#0060FF]"
+                      }`}>
                         {chat.username}
                       </p>
-                      <p className="text-[#0060FF]">{chat.timeStamp}</p>
+                      <p
+                        className={`${
+                          chat.textColor === "white"
+                            ? "text-white"
+                            : "text-[#0060FF]"
+                        }`}
+                      >
+                        {chat.timeStamp}
+                      </p>
                     </div>
                     <img src={chat.file} className="rounded-lg" />
                   </div>

@@ -44,7 +44,6 @@ const VideoGrid = () => {
       if (stream) {
         const videoElement = remoteVideoRefs.current[index];
         if (videoElement) {
-          console.log(`Setting stream for userId: ${userId}`);
           videoElement.srcObject = stream;
         } else {
           console.error(`No video element found at index: ${index}`);
@@ -52,6 +51,7 @@ const VideoGrid = () => {
       }
     });
   }, [streams]);
+
 
   return (
     <>
