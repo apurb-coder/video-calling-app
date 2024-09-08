@@ -124,13 +124,13 @@ io.on("connection", (socket) => {
          Rooms[roomId].Active_users.splice(userIndex, 1);
        }
        if (Rooms[roomId].Active_users.length === 0) {
-         delete Rooms[roomId];
+        //  delete Rooms[roomId];
        }
      }
      socket.broadcast
        .to(roomId)
        .emit("user-left-meeting", { username: Users[socket.id]?.username });
-     delete Users[socket.id];
+    //  delete Users[socket.id];
    });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
