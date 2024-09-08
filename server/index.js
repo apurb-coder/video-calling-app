@@ -4,11 +4,13 @@ import https from "https"; // use https instead of http
 import fs from "fs";
 import cors from "cors";
 import { linkify } from "./ExtractURLMetadata.js";
+import dotenv from "dotenv"
 
+dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: ["https://localhost:5173", "https://192.168.135.188:5173"], // Allow this specific origin
+    origin: ["https://localhost:5173", process.env.FRONT_END_URL], // Allow this specific origin
     methods: "GET,POST,PUT,DELETE", // Allow specific methods
     credentials: true, // Allow credentials (cookies, authorization headers)
   })
@@ -40,7 +42,9 @@ const server = https.createServer(sslOptions, app);
 // Create a Socket.IO server and attach it to the HTTP server
 const io = new Server(server, {
   cors: {
-    origin: ["https://localhost:5173", "https://192.168.135.188:5173"], // or specify allowed origins like "http://localhost:3000"
+    origin: ["https://localhost:5173", process.env.FRONT_END_URL],
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 

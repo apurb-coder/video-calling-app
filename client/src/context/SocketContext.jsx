@@ -24,7 +24,7 @@ export const useSocket = () => {
 
 export const SocketProvider = ({ children }) => {
   const [peer, setPeer] = useState(null);
-  const { streams, setStreams } = useAppContext();
+  const [streams, setStreams] = useState({});
   const { roomID, username, setMyPeerID } = useAppContext();
   const [isScreenShareOn, setIsScreenShareOn] = useState(false);
   const [screenShareStream, setScreenShareStream] = useState(false);
@@ -55,7 +55,7 @@ export const SocketProvider = ({ children }) => {
           },
         ],
         sdpSemantics: "unified-plan",
-        iceTransportPolicy: "relay", // <- it means using only relay server (our free turn server in this case)
+        iceTransportPolicy: "relay",
       },
     });
     console.log("user: " + username);
@@ -138,9 +138,7 @@ export const SocketProvider = ({ children }) => {
           window.localStream = stream;
           setScreenShareStream(stream);
           // event Listener for when the screen sharing stream ends
-          stream
-            .getTracks()[0]
-            .addEventListener("ended", switchToCameraStream);
+          stream.getTracks()[0].addEventListener("ended", switchToCameraStream);
           peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
           socket.on("user-joined-meeting", handleUserJoinedMeeting);
         })
@@ -187,10 +185,11 @@ export const SocketProvider = ({ children }) => {
         socket,
         peer,
         streams,
+        setStreams,
         joinRoomHandle,
         isScreenShareOn,
         setIsScreenShareOn,
-        screenShareStream
+        screenShareStream,
       }}
     >
       {children}

@@ -4,9 +4,10 @@ import { useSocket } from "../context/SocketContext.jsx";
 import ReactPlayer from "react-player"; // video player for Reactjs
 
 const VideoGrid = () => {
-  const { streams, roomID, username, setMyPeerID } = useAppContext();
-  const { isScreenShareOn, screenShareStream } = useSocket();
+  const { roomID, username, setMyPeerID } = useAppContext();
+  const { isScreenShareOn, screenShareStream, streams } = useSocket();
   const videoRef = useRef(null);
+  const remoteVideoRefs = useRef([]); // Store references to remote video elements
 
   useEffect(() => {
     // Request Camera stream
@@ -35,6 +36,23 @@ const VideoGrid = () => {
     }
   }, [isScreenShareOn, screenShareStream]);
 
+  useEffect(() => {
+    const userIds = Object.keys(streams).slice(0, 4); // Limit to first 4 participants
+
+    userIds.forEach((userId, index) => {
+      const stream = streams[userId];
+      if (stream) {
+        const videoElement = remoteVideoRefs.current[index];
+        if (videoElement) {
+          console.log(`Setting stream for userId: ${userId}`);
+          videoElement.srcObject = stream;
+        } else {
+          console.error(`No video element found at index: ${index}`);
+        }
+      }
+    });
+  }, [streams]);
+
   return (
     <>
       {/* Local video */}
@@ -48,14 +66,14 @@ const VideoGrid = () => {
       />
       {/* BUG: Other Participants video not showing*/}
       {/* Render videos for each remote stream */}
-      {Object.entries(streams).map(([userId, stream]) => (
+      {[0, 1, 2, 3].map((index) => (
         <video
-          key={userId}
+          key={index}
+          className="w-80 h-80"
           autoPlay
           playsInline
-          className="w-80 h-80"
           ref={(videoElement) => {
-            if (videoElement) videoElement.srcObject = stream;
+            remoteVideoRefs.current[index] = videoElement;
           }}
         />
       ))}

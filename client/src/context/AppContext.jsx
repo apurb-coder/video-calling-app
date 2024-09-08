@@ -13,7 +13,6 @@ export const useAppContext = () => {
 
 export const AppContextProvider = ({ children }) => {
   // Define All the states used in the App like room_id , user ID, participants list
-  const [streams, setStreams] = useState({});
   const [roomID, setRoomID] = useState("");
   const [username, setUsername] = useState("");
   const [topic, setTopic] = useState("");
@@ -67,8 +66,6 @@ export const AppContextProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        streams,
-        setStreams,
         roomID,
         setRoomID,
         username,
