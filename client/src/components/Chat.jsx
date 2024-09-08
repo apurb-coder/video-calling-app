@@ -5,6 +5,7 @@ import user_add from "../assets/user-add.svg";
 import send_logo from "../assets/Group 237540.svg";
 import { FaRegSmileWink } from "react-icons/fa";
 import { RxImage } from "react-icons/rx";
+import { Toaster } from "react-hot-toast";
 const LazyEmojiPicker = lazy(() => import("emoji-picker-react"));
 const Chat = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const Chat = () => {
   };
   return (
     <div className="flex flex-col h-[91.1%] justify-center fixed bottom-0 right-0">
+      <Toaster position="top-right" reverseOrder={true} />
       <div className="p-2 flex space-x-5 items-center bg-white">
         {/* <p className="font-medium">Participants</p> */}
         <div

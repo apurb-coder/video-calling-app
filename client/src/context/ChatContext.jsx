@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useSocket } from "./SocketContext.jsx";
 import { useAppContext } from "./AppContext.jsx";
 import Compressor from "compressorjs"; // for image compression
+import toast from "react-hot-toast";
+import { IoClose } from "react-icons/io5";
 
 const ChatContext = createContext(null);
 
@@ -22,24 +24,40 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     if (!socket) return;
     const handleUserJoinedMeeting = ({ username }) => {
-      setChats((prevChats) => [
-        ...prevChats,
-        {
-          type: "info",
-          message: `${username} joined the meeting`,
-          pos: "center",
-        },
-      ]);
+      // setChats((prevChats) => [
+      //   ...prevChats,
+      //   {
+      //     type: "info",
+      //     message: `${username} joined the meeting`,
+      //     pos: "center",
+      //   },
+      // ]);
+      toast((t) => (
+        <span className="text-[#0060FF]">
+          {username} <b>Joined</b>
+          {/* <button onClick={() => toast.dismiss(t.id)}>
+            <IoClose className=" text-[#0060FF]" />
+          </button> */}
+        </span>
+      ));
     };
     const handleMessageLeftMeeting = ({ username }) => {
-      setChats((prevChats) => [
-        ...prevChats,
-        {
-          type: "info",
-          message: `${username} left the meeting`,
-          pos: "center",
-        },
-      ]);
+      // setChats((prevChats) => [
+      //   ...prevChats,
+      //   {
+      //     type: "info",
+      //     message: `${username} left the meeting`,
+      //     pos: "center",
+      //   },
+      // ]);
+      toast((t) => (
+        <span className="text-[#0060FF]">
+          {username} <b>Left the Meeting</b>
+          {/* <button onClick={() => toast.dismiss(t.id)}>
+            <IoClose className=" text-[#0060FF]" />
+          </button> */}
+        </span>
+      ));
     };
     socket.on("user-joined-meeting", handleUserJoinedMeeting);
     // user left the meeting chat
