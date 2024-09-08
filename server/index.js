@@ -109,6 +109,25 @@ io.on("connection", (socket) => {
       .emit("user-left-meeting", { username: username });
     socket.leave(room_id);
   });
+   socket.on("disconnect", () => {
+     console.log(`Disconnected User:${socket.id}`);
+     const { roomId } = Users[socket.id] || {};
+     if (roomId && Rooms[roomId]) {
+       const userIndex = Rooms[roomId].Active_users.indexOf(
+         Users[socket.id].username
+       );
+       if (userIndex !== -1) {
+         Rooms[roomId].Active_users.splice(userIndex, 1);
+       }
+       if (Rooms[roomId].Active_users.length === 0) {
+         delete Rooms[roomId];
+       }
+     }
+     socket.broadcast
+       .to(roomId)
+       .emit("user-left-meeting", { username: Users[socket.id]?.username });
+     delete Users[socket.id];
+   });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
