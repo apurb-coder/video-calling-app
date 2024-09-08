@@ -216,8 +216,11 @@ export const ChatProvider = ({ children }) => {
               username: myUsername,
               timeStamp: currentTime,
             });
+            // Reset the input field 
+            e.target.value = "";
           };
           fileReader.readAsDataURL(compressedImageFile);
+          
         },
         error(err) {
           console.error("Error compressing the image:", err.message);
