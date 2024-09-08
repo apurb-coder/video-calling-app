@@ -1,20 +1,27 @@
 import express from "express";
 import { Server } from "socket.io";
-import http from "http";
+import https from "https"; // use https instead of http
+import fs from "fs";
 import cors from "cors";
 import { linkify } from "./ExtractURLMetadata.js";
 
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow this specific origin
+    origin: ["https://localhost:5173", "https://192.168.135.188:5173"], // Allow this specific origin
     methods: "GET,POST,PUT,DELETE", // Allow specific methods
     credentials: true, // Allow credentials (cookies, authorization headers)
   })
 );
 app.use(express.json());
 const PORT = process.env.PORT || 8000;
-
+const SSL_CRT_FILE = process.env.SSL_CRT_FILE || "../cert/localhost+2.pem"; // your certificate file
+const SSL_KEY_FILE = process.env.SSL_KEY_FILE || "../cert/localhost+2-key.pem"; // your private key file
+// Read SSL certificate and key
+const sslOptions = {
+  key: fs.readFileSync(SSL_KEY_FILE),
+  cert: fs.readFileSync(SSL_CRT_FILE),
+};
 // to store data of users
 // Const Users= {socketID:{username:test,SocketId:84274,roomId:472384}}
 const Users = {};
@@ -29,11 +36,11 @@ const Users = {};
 const Rooms = {};
 
 // Create an HTTP server using the Express app
-const server = http.createServer(app);
+const server = https.createServer(sslOptions, app);
 // Create a Socket.IO server and attach it to the HTTP server
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // or specify allowed origins like "http://localhost:3000"
+    origin: ["https://localhost:5173", "https://192.168.135.188:5173"], // or specify allowed origins like "http://localhost:3000"
   },
 });
 
@@ -212,7 +219,8 @@ io.on("connection", (socket) => {
     }
   });
 });
-server.listen(PORT, (error) => {
+const IP = '0.0.0.0'; // Listen on all network interfaces
+server.listen(PORT, IP,(error) => {
   try {
     console.log(`Server listening on ${PORT}`);
   } catch (error) {

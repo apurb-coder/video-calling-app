@@ -53,6 +53,7 @@ const VideoGrid = () => {
           key={userId}
           autoPlay
           playsInline
+          className="w-80 h-80"
           ref={(videoElement) => {
             if (videoElement) videoElement.srcObject = stream;
           }}
