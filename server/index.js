@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "socket.io";
 import https from "https"; // use https instead of http
+import http from "http"; // use https instead of
 import fs from "fs";
 import cors from "cors";
 import { linkify } from "./ExtractURLMetadata.js";
@@ -38,7 +39,8 @@ const Users = {};
 const Rooms = {};
 
 // Create an HTTP server using the Express app
-const server = https.createServer(sslOptions, app);
+// const server = https.createServer(sslOptions, app);
+const server = http.createServer(app);
 // Create a Socket.IO server and attach it to the HTTP server
 const io = new Server(server, {
   cors: {

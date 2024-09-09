@@ -60,7 +60,7 @@ export const SocketProvider = ({ children }) => {
     });
     console.log("user: " + username);
 
-    myPeer.on("open", (peerID) => {
+    socket.on("connect", (peerID) => {
       console.log(`Your peerID is ${peerID}`);
       socket.emit("joinRoom", { username, room_id: roomID, peerID: peerID });
     });

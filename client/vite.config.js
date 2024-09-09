@@ -6,13 +6,13 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    https: {
-      key: fs.readFileSync(
-        path.resolve(__dirname, "../cert/localhost+2-key.pem")
-      ),
-      cert: fs.readFileSync(path.resolve(__dirname, "../cert/localhost+2.pem")),
-    },
-    // Optionally specify other server options here
-  },
+  // server: {
+  //   https: {
+  //     key: fs.readFileSync(
+  //       path.resolve(__dirname, "../cert/localhost+2-key.pem")
+  //     ),
+  //     cert: fs.readFileSync(path.resolve(__dirname, "../cert/localhost+2.pem")),
+  //   },
+  //   // Optionally specify other server options here
+  // },
 });
