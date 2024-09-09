@@ -62,7 +62,10 @@ export const ChatProvider = ({ children }) => {
     socket.on("user-joined-meeting", handleUserJoinedMeeting);
     // user left the meeting chat
     socket.on("user-left-meeting", handleMessageLeftMeeting);
-    return;
+    return()=>{
+      socket.off("user-joined-meeting", handleUserJoinedMeeting);
+      socket.off("user-left-meeting", handleMessageLeftMeeting);
+    }
   }, [socket]);
   useEffect(() => {
     if (!socket) return;
