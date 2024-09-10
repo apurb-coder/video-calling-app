@@ -123,7 +123,7 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  // send a message: on send button click execute below function
+  // send a message: on send button click execute below function 
   const sendMessage = async (message) => {
     const myUsername = sessionStorage.getItem("username");
     if (!myUsername) window.location.reload();
