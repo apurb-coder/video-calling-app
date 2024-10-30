@@ -3,9 +3,31 @@ import { useSocket } from "./SocketContext.jsx";
 import { useAppContext } from "./AppContext.jsx";
 import Compressor from "compressorjs"; // for image compression
 import toast from "react-hot-toast";
+import CryptoJS from "crypto-js";
 import { IoClose } from "react-icons/io5";
 
 const ChatContext = createContext(null);
+
+const secretKey = import.meta.env.VITE_MESSAGE_SECRET_KEY;
+// Function to encrypt message
+const encryptTextMessage = (message, secretKey) => {
+  return CryptoJS.AES.encrypt(message, secretKey).toString();
+};
+// Function to decrypt message
+const decryptMessage = (encryptedMessage, secretKey) => {
+  try {
+    if (!encryptedMessage || !secretKey) {
+      console.error("Decryption failed: Missing encryptedMessage or secretKey");
+      return "";
+    }
+    const bytes = CryptoJS.AES.decrypt(encryptedMessage, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch (error) {
+    console.error("Decryption failed:", error.message);
+    return "";
+  }
+};
+
 
 export const useChat = () => {
   const context = useContext(ChatContext);
@@ -76,7 +98,7 @@ export const ChatProvider = ({ children }) => {
           ...prevChats,
           {
             type: "text",
-            message: message,
+            message: decryptMessage(message,secretKey),
             pos: "left",
             bgColor: "#DFEBFF",
             textColor: "#0060FF",
@@ -117,6 +139,7 @@ export const ChatProvider = ({ children }) => {
   };
   //cmd for meet chat : on "yourChat" value change execute this
   // TODO: add more commands later
+  // BUG: /clear command not working
   const exeCommand = () => {
     if (word(yourChat, 0) === "/clear") {
       setChats([]);
@@ -142,7 +165,7 @@ export const ChatProvider = ({ children }) => {
       ]);
       socket.emit("send", {
         type: "text",
-        message: yourChat,
+        message: encryptTextMessage(yourChat,secretKey),
         username: myUsername,
         timeStamp: currentTime,
       });
