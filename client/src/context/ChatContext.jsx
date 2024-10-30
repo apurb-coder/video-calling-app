@@ -10,7 +10,7 @@ const ChatContext = createContext(null);
 
 const secretKey = import.meta.env.VITE_MESSAGE_SECRET_KEY;
 // Function to encrypt message
-const encryptTextMessage = (message, secretKey) => {
+const encryptMessage = (message, secretKey) => {
   return CryptoJS.AES.encrypt(message, secretKey).toString();
 };
 // Function to decrypt message
@@ -165,7 +165,7 @@ export const ChatProvider = ({ children }) => {
       ]);
       socket.emit("send", {
         type: "text",
-        message: encryptTextMessage(yourChat,secretKey),
+        message: encryptMessage(yourChat,secretKey),
         username: myUsername,
         timeStamp: currentTime,
       });
