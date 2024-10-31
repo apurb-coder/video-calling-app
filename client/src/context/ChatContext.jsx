@@ -116,7 +116,7 @@ export const ChatProvider = ({ children }) => {
             pos: "left",
             bgColor: "#DFEBFF",
             textColor: "#0060FF",
-            file: message,
+            file: decryptMessage(message,secretKey),
             username: username,
             timeStamp: timeStamp,
           },
@@ -220,7 +220,12 @@ export const ChatProvider = ({ children }) => {
                      This exceeds our 2MB limit. Please try a smaller image.`);
               return;
             }
-
+            // Encrypt the image's base64 data URL
+            const encryptedDataUrl = encryptMessage(dataUrl, secretKey);
+            if (!encryptedDataUrl) {
+              console.error("Encryption failed. Please check your secret key.");
+              return;
+            }
             setChats((prevChats) => [
               ...prevChats,
               {
@@ -238,11 +243,11 @@ export const ChatProvider = ({ children }) => {
             // Send the entire file data directly
             socket.emit("send", {
               type: "file",
-              message: dataUrl,
+              message: encryptedDataUrl,
               username: myUsername,
               timeStamp: currentTime,
             });
-            // Reset the input field 
+            // Reset the input field
             e.target.value = "";
           };
           fileReader.readAsDataURL(compressedImageFile);
