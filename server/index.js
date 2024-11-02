@@ -5,7 +5,7 @@ import http from "http"; // use https instead of
 import fs from "fs";
 import cors from "cors";
 import { linkify } from "./ExtractURLMetadata.js";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 dotenv.config();
 const app = express();
@@ -29,11 +29,13 @@ const sslOptions = {
 // Const Users= {socketID:{username:test,SocketId:84274,roomId:472384}}
 const Users = {};
 // Room data
-/* Rooms = {
-    room_id:{
-        Active_users: [username1, username2],
-        Room_topic: "",
-    }
+/* const Rooms = {
+  room_id: {
+    Active_users: ["username1", "username2"],
+    Active_user_socketIDs: ["socketID1", "socketID2"],
+    Room_topic: "",
+  }
+};
 }
 */
 const Rooms = {};
@@ -74,17 +76,27 @@ app.get("/extracturlmetadata", async (req, res) => {
   try {
     const chat = req?.body?.data;
     const responseData = await linkify(chat);
-    res.status(200).json({ message: responseData});
+    res.status(200).json({ message: responseData });
   } catch (err) {
     console.log("Error: " + err);
     res.status(500).json({ message: "Failed to extract URL metadata" });
   }
 });
 
+const emitUpdatedUserList = (socketID,roomID) => {
+  if (!Rooms[roomID]) {
+    console.log("[error]: Room not found");
+    return;
+  }
+  const otherUserSocketIDs = Rooms[roomID].Active_user_socketIDs.filter(
+    (id) => id !== socketID
+  );
+  io.to(roomID).emit("AllConnectedUsers", { users: otherUserSocketIDs });
+};
 
 //socket.io implementation
 io.on("connection", (socket) => {
-  socket.emit("me", { socketId: socket.id });
+  socket.emit("YourSocketId", { socketID: socket.id });
   console.log(`Connected User:${socket.id}`);
 
   socket.on("leaveRoom", ({ username, room_id }) => {
@@ -115,25 +127,31 @@ io.on("connection", (socket) => {
       .emit("user-left-meeting", { username: username });
     socket.leave(room_id);
   });
-   socket.on("disconnect", () => {
-     console.log(`Disconnected User:${socket.id}`);
-     const { roomId } = Users[socket.id] || {};
-     if (roomId && Rooms[roomId]) {
-       const userIndex = Rooms[roomId].Active_users.indexOf(
-         Users[socket.id].username
-       );
-       if (userIndex !== -1) {
-         Rooms[roomId].Active_users.splice(userIndex, 1);
-       }
-       if (Rooms[roomId].Active_users.length === 0) {
+  socket.on("disconnect", () => {
+    console.log(`Disconnected User:${socket.id}`);
+    const { roomId } = Users[socket.id] || {};
+    if (roomId && Rooms[roomId]) {
+      const userIndex = Rooms[roomId].Active_users.indexOf(
+        Users[socket.id].username
+      );
+      if (userIndex !== -1) {
+        Rooms[roomId].Active_users.splice(userIndex, 1);
+      }
+      if (Rooms[roomId].Active_users.length === 0) {
         //  delete Rooms[roomId];
-       }
-     }
-     socket.broadcast
-       .to(roomId)
-       .emit("user-left-meeting", { username: Users[socket.id]?.username });
+      }
+      // Updating the active User SocketIDs when user is disconnected.
+      const userDeleteIndex= Rooms[roomId].Active_user_socketIDs.indexOf(socket.id);
+      if(userDeleteIndex!== -1) {
+        Rooms[roomId].Active_user_socketIDs.splice(userDeleteIndex, 1);
+      }
+      emitUpdatedUserList(socket.id, roomId);
+    }
+    socket.broadcast
+      .to(roomId)
+      .emit("user-left-meeting", { username: Users[socket.id]?.username });
     //  delete Users[socket.id];
-   });
+  });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
   socket.on("createRoom", ({ username, room_id, room_topic }) => {
@@ -146,12 +164,14 @@ io.on("connection", (socket) => {
     if (!Rooms[room_id]) {
       Rooms[room_id] = {
         Active_users: [],
+        Active_user_socketIDs: [],
         Room_topic: room_topic,
       };
     }
 
     // Add the user to the active users list in the room
     Rooms[room_id].Active_users.push(username);
+    Rooms[room_id].Active_user_socketIDs.push(socket.id);
 
     // Save the user in the Users object with the roomId
     Users[socket.id] = {
@@ -183,14 +203,14 @@ io.on("connection", (socket) => {
 
     // Add the user to the active users list in the room
     Rooms[room_id].Active_users.push(username);
-
+    Rooms[room_id].Active_user_socketIDs.push(socket.id);
     // Save the user in the Users object with the roomId
     Users[socket.id] = {
       ...Users[socket.id],
       username: username,
       roomId: room_id,
     };
-
+    emitUpdatedUserList(socket.id,room_id);
     // Emit the "user-joined-meeting" event
     socket.broadcast.to(room_id).emit("user-joined-meeting", {
       socketId: socket.id,
@@ -210,7 +230,7 @@ io.on("connection", (socket) => {
         username: username,
         message: message,
         type: "text",
-        timeStamp:timeStamp,
+        timeStamp: timeStamp,
       });
     }
     if (type === "file") {
@@ -223,6 +243,36 @@ io.on("connection", (socket) => {
     }
   });
 
+
+  socket.on("getAllConnectedUsers", ({ room_id }) => {
+    if (!Rooms[room_id]) {
+      socket.emit("error", { message: "Room not found" });
+      return;
+    }
+
+    // Filter out the current user's socket ID
+    const otherUserSocketIDs = Rooms[room_id].Active_user_socketIDs.filter(
+      (id) => id !== socket.id
+    );
+
+    socket.to(room_id).emit("AllConnectedUsers", { users: otherUserSocketIDs });
+  });
+
+  // simple-peer signal forwarding
+  socket.on("callUser", ({ userToCall, signalData }) => {
+    console.log(`User ${socket.id} is calling ${userToCall}`);
+    io.to(userToCall).emit("incommingCall", { signalData, from: socket.id });
+  });
+  // simple-peer signal forwarding
+  socket.on("acceptingCall", ({ acceptingCallFrom, signalData }) => {
+    console.log(
+      `User ${socket.id} is accepting call from ${acceptingCallFrom}`
+    );
+    io.to(acceptingCallFrom).emit("callAccepted", {
+      signalData,
+      from: socket.id,
+    });
+  });
   //audio State change : implement io.on('audioStateChange')
   socket.on("audioStateChange", (state) => {
     const roomId = Users[socket.id].roomId;
@@ -244,8 +294,8 @@ io.on("connection", (socket) => {
     }
   });
 });
-const IP = '0.0.0.0'; // Listen on all network interfaces
-server.listen(PORT, IP,(error) => {
+const IP = "0.0.0.0"; // Listen on all network interfaces
+server.listen(PORT, IP, (error) => {
   try {
     console.log(`Server listening on ${PORT}`);
   } catch (error) {
