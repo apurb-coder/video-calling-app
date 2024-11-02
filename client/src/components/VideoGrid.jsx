@@ -31,6 +31,7 @@ const VideoGrid = () => {
   const remoteVideo = useRef(null);
   const peerRef = useRef(null);
 
+
   useEffect(() => {
     if(!socket){
       console.error("Socket not connected")
@@ -38,10 +39,15 @@ const VideoGrid = () => {
     }
     const handleYourSocketId = ({ socketID }) => setMySocketID(socketID);
     const handleAllConnectedUsers = ({ users, yourSocketID }) => {
-      const filteredUsers = users.filter(id => id!==yourSocketID);
+      // Convert the users object to an array of [socketID, username] pairs
+      const filteredUsers = Object.fromEntries(
+        Object.entries(users).filter(([id]) => id !== yourSocketID)
+      );
+
       console.log("Your SocketID:" + yourSocketID);
       setConnectedUsers(filteredUsers);
     };
+
 
     socket.on("YourSocketId", handleYourSocketId);
     socket.on("AllConnectedUsers", handleAllConnectedUsers);
@@ -242,7 +248,7 @@ const VideoGrid = () => {
 
   useEffect(() => {
     handleRequestUsers();
-    const interval = setInterval(handleRequestUsers, 5000);
+    const interval = setInterval(handleRequestUsers, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -276,11 +282,14 @@ const VideoGrid = () => {
       <div className="mt-4">
         <h3>Connected Users:</h3>
         <ul>
-          {connectedUsers.map((user) => (
-            <li key={user} className="flex items-center justify-between mb-2">
-              <span>{user}</span>
+          {Object.entries(connectedUsers).map(([socketID, username]) => (
+            <li
+              key={socketID}
+              className="flex items-center justify-between mb-2"
+            >
+              <span>{username}</span>
               <button
-                onClick={() => setCallerID(user)}
+                onClick={() => setCallerID(socketID)}
                 className="bg-blue-500 text-white px-2 py-1 rounded"
                 disabled={isInCall}
               >

@@ -140,18 +140,14 @@ io.on("connection", (socket) => {
       if (socketIndex !== -1)
         Rooms[roomId].Active_user_socketIDs.splice(socketIndex, 1);
 
-      // Optionally delete the room if no users are left
-      if (Rooms[roomId].Active_users.length === 0) {
-        delete Rooms[roomId];
-      }
+      
     }
 
-    delete Users[socket.id];
     // emitUpdatedUserList(socket.id, roomId); // Update other users in the room
     socket.broadcast
       .to(roomId)
       .emit("user-left-meeting", { username: Users[socket.id]?.username });
-    //  delete Users[socket.id];
+     delete Users[socket.id];
   });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
@@ -250,11 +246,19 @@ io.on("connection", (socket) => {
       return;
     }
 
-    // Filter out the current user's socket ID
-    const otherUserSocketIDs = Rooms[room_id].Active_user_socketIDs;
+    // Create an object with socketID as keys and username as values
+    const users = Rooms[room_id].Active_user_socketIDs.reduce(
+      (acc, socketID, index) => {
+        acc[socketID] = Rooms[room_id].Active_users[index];
+        return acc;
+      },
+      {}
+    );
 
-    socket.emit("AllConnectedUsers", { users: otherUserSocketIDs, yourSocketID:socket.id });
+    socket.emit("AllConnectedUsers", { users, yourSocketID: socket.id });
   });
+
+
 
   // simple-peer signal forwarding
   socket.on("callUser", ({ userToCall, signalData }) => {
