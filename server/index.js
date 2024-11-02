@@ -39,7 +39,6 @@ const Users = {};
 }
 */
 const Rooms = {};
-
 // Create an HTTP server using the Express app
 // const server = https.createServer(sslOptions, app);
 const server = http.createServer(app);
@@ -83,16 +82,16 @@ app.get("/extracturlmetadata", async (req, res) => {
   }
 });
 
-const emitUpdatedUserList = (socketID,roomID) => {
-  if (!Rooms[roomID]) {
-    console.log("[error]: Room not found");
-    return;
-  }
-  const otherUserSocketIDs = Rooms[roomID].Active_user_socketIDs.filter(
-    (id) => id !== socketID
-  );
-  io.to(roomID).emit("AllConnectedUsers", { users: otherUserSocketIDs });
-};
+// const emitUpdatedUserList = (socketID,roomID) => {
+//   if (!Rooms[roomID]) {
+//     console.log("[error]: Room not found");
+//     return;
+//   }
+//   const otherUserSocketIDs = Rooms[roomID].Active_user_socketIDs.filter(
+//     (id) => id !== socketID
+//   );
+//   io.to(roomID).emit("AllConnectedUsers", { users: otherUserSocketIDs });
+// };
 
 //socket.io implementation
 io.on("connection", (socket) => {
@@ -129,24 +128,26 @@ io.on("connection", (socket) => {
   });
   socket.on("disconnect", () => {
     console.log(`Disconnected User:${socket.id}`);
-    const { roomId } = Users[socket.id] || {};
+    const { roomId, username } = Users[socket.id] || {};
+
     if (roomId && Rooms[roomId]) {
-      const userIndex = Rooms[roomId].Active_users.indexOf(
-        Users[socket.id].username
+      const userIndex = Rooms[roomId].Active_users.indexOf(username);
+      if (userIndex !== -1) Rooms[roomId].Active_users.splice(userIndex, 1);
+
+      const socketIndex = Rooms[roomId].Active_user_socketIDs.indexOf(
+        socket.id
       );
-      if (userIndex !== -1) {
-        Rooms[roomId].Active_users.splice(userIndex, 1);
-      }
+      if (socketIndex !== -1)
+        Rooms[roomId].Active_user_socketIDs.splice(socketIndex, 1);
+
+      // Optionally delete the room if no users are left
       if (Rooms[roomId].Active_users.length === 0) {
-        //  delete Rooms[roomId];
+        delete Rooms[roomId];
       }
-      // Updating the active User SocketIDs when user is disconnected.
-      const userDeleteIndex= Rooms[roomId].Active_user_socketIDs.indexOf(socket.id);
-      if(userDeleteIndex!== -1) {
-        Rooms[roomId].Active_user_socketIDs.splice(userDeleteIndex, 1);
-      }
-      emitUpdatedUserList(socket.id, roomId);
     }
+
+    delete Users[socket.id];
+    // emitUpdatedUserList(socket.id, roomId); // Update other users in the room
     socket.broadcast
       .to(roomId)
       .emit("user-left-meeting", { username: Users[socket.id]?.username });
@@ -210,7 +211,7 @@ io.on("connection", (socket) => {
       username: username,
       roomId: room_id,
     };
-    emitUpdatedUserList(socket.id,room_id);
+    // emitUpdatedUserList(socket.id,room_id);
     // Emit the "user-joined-meeting" event
     socket.broadcast.to(room_id).emit("user-joined-meeting", {
       socketId: socket.id,
@@ -243,7 +244,6 @@ io.on("connection", (socket) => {
     }
   });
 
-
   socket.on("getAllConnectedUsers", ({ room_id }) => {
     if (!Rooms[room_id]) {
       socket.emit("error", { message: "Room not found" });
@@ -251,11 +251,9 @@ io.on("connection", (socket) => {
     }
 
     // Filter out the current user's socket ID
-    const otherUserSocketIDs = Rooms[room_id].Active_user_socketIDs.filter(
-      (id) => id !== socket.id
-    );
+    const otherUserSocketIDs = Rooms[room_id].Active_user_socketIDs;
 
-    socket.to(room_id).emit("AllConnectedUsers", { users: otherUserSocketIDs });
+    socket.emit("AllConnectedUsers", { users: otherUserSocketIDs, yourSocketID:socket.id });
   });
 
   // simple-peer signal forwarding

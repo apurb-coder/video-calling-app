@@ -5,7 +5,6 @@ import Peer from "simple-peer";
 import { useSocket } from "../context/SocketContext.jsx";
 import ReactPlayer from "react-player"; // video player for Reactjs
 
-
 // Move endCall outside the App component and export it
 export const endCall = (peerRef, setIsInCall, setCallerID, remoteVideo) => {
   if (peerRef.current) {
@@ -17,7 +16,6 @@ export const endCall = (peerRef, setIsInCall, setCallerID, remoteVideo) => {
     remoteVideo.current.srcObject = null;
   }
 };
-
 
 const VideoGrid = () => {
   const { roomID, username, setMyPeerID } = useAppContext();
@@ -34,23 +32,24 @@ const VideoGrid = () => {
   const peerRef = useRef(null);
 
   useEffect(() => {
-    if (!socket) return;
+    if(!socket){
+      console.error("Socket not connected")
+      return;
+    }
+    const handleYourSocketId = ({ socketID }) => setMySocketID(socketID);
+    const handleAllConnectedUsers = ({ users, yourSocketID }) => {
+      const filteredUsers = users.filter(id => id!==yourSocketID);
+      console.log("Your SocketID:" + yourSocketID);
+      setConnectedUsers(filteredUsers);
+    };
 
-    socket.on("YourSocketId", ({ socketID }) => {
-      console.log("Your socket ID is: ", socketID);
-      setMySocketID(socketID);
-    });
-
-    socket.on("AllConnectedUsers", ({ users }) => {
-      console.log("All connected users: ", users);
-      setConnectedUsers(users);
-    });
-
+    socket.on("YourSocketId", handleYourSocketId);
+    socket.on("AllConnectedUsers", handleAllConnectedUsers);
     socket.on("incommingCall", handleIncomingCall);
 
     return () => {
-      socket.off("YourSocketId");
-      socket.off("AllConnectedUsers");
+      socket.off("YourSocketId", handleYourSocketId);
+      socket.off("AllConnectedUsers", handleAllConnectedUsers);
       socket.off("incommingCall", handleIncomingCall);
     };
   }, [socket]);
@@ -216,8 +215,9 @@ const VideoGrid = () => {
 
   const handlePeerError = (err) => {
     console.error("Peer connection error:", err);
-    endCall();
+    endCall(peerRef, setIsInCall, setCallerID, remoteVideo);
   };
+
 
   const handleCall = () => {
     if (callerID && !isInCall) {
@@ -237,14 +237,14 @@ const VideoGrid = () => {
   };
 
   const handleRequestUsers = () => {
-    socket.emit("getAllConnectedUsers",{room_id:roomID});
+    socket.emit("getAllConnectedUsers", { room_id: roomID });
   };
 
   useEffect(() => {
     handleRequestUsers();
-    const interval = setInterval(handleRequestUsers, 1000);
+    const interval = setInterval(handleRequestUsers, 5000);
     return () => clearInterval(interval);
-  }, [roomID]);
+  }, []);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen w-screen text-blue-500">
