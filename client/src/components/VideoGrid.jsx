@@ -6,7 +6,14 @@ import { useSocket } from "../context/SocketContext.jsx";
 import ReactPlayer from "react-player"; // video player for Reactjs
 
 // Move endCall outside the App component and export it
-export const endCall = (peerRef, setIsInCall, setCallerID, remoteVideo) => {
+export const endCall = (
+  peerRef,
+  setIsInCall,
+  setCallerID,
+  callerID,
+  remoteVideo,
+  socket
+) => {
   if (peerRef.current) {
     peerRef.current.destroy();
   }
@@ -15,6 +22,9 @@ export const endCall = (peerRef, setIsInCall, setCallerID, remoteVideo) => {
   if (remoteVideo.current) {
     remoteVideo.current.srcObject = null;
   }
+
+  // Notify the other participant that the call has ended
+  socket.emit("callEnded", { to: callerID });
 };
 
 const VideoGrid = () => {
@@ -31,10 +41,9 @@ const VideoGrid = () => {
   const remoteVideo = useRef(null);
   const peerRef = useRef(null);
 
-
   useEffect(() => {
-    if(!socket){
-      console.error("Socket not connected")
+    if (!socket) {
+      console.error("Socket not connected");
       return;
     }
     const handleYourSocketId = ({ socketID }) => setMySocketID(socketID);
@@ -48,7 +57,6 @@ const VideoGrid = () => {
       setConnectedUsers(filteredUsers);
     };
 
-
     socket.on("YourSocketId", handleYourSocketId);
     socket.on("AllConnectedUsers", handleAllConnectedUsers);
     socket.on("incommingCall", handleIncomingCall);
@@ -60,43 +68,59 @@ const VideoGrid = () => {
     };
   }, [socket]);
 
-   const getLocalVideoStream = async () => {
-     try {
-       const stream = await navigator.mediaDevices.getUserMedia({
-         video: true,
-         audio: true,
-       });
-       setMyVideoStream(stream);
-       window.localStream = stream;
-       if (localVideo.current) {
-         localVideo.current.srcObject = stream;
-       }
-     } catch (error) {
-       console.error("Error getting user media", error);
-     }
-   };
-   const getScreenStream = async () => {
-     try {
-       const screenStream = await navigator.mediaDevices.getDisplayMedia({
-         video: true,
-         audio: true,
-       });
-       setMyVideoStream(screenStream);
-       window.localStream = screenStream;
-       if (localVideo.current) {
-         localVideo.current.srcObject = screenStream;
-       }
-     } catch (error) {
-       console.error("Error getting screen share", error);
-     }
-   };
+  // End call when get the signal
   useEffect(() => {
-     if (isScreenShareOn) {
-       getScreenStream();
-     } else {
-       getLocalVideoStream();
-     }
-  }, [setIsScreenShareOn,isScreenShareOn]);
+    if (!socket) {
+      return;
+    }
+
+    // Listen for the call-ended event from the other participant
+    socket.on("callEnded", () => {
+      console.log("The other participant has ended the call.");
+      endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
+    });
+
+    return () => {
+      socket.off("callEnded");
+    };
+  }, [socket, peerRef, setIsInCall, setCallerID, remoteVideo]);
+  const getLocalVideoStream = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      setMyVideoStream(stream);
+      window.localStream = stream;
+      if (localVideo.current) {
+        localVideo.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Error getting user media", error);
+    }
+  };
+  const getScreenStream = async () => {
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
+      });
+      setMyVideoStream(screenStream);
+      window.localStream = screenStream;
+      if (localVideo.current) {
+        localVideo.current.srcObject = screenStream;
+      }
+    } catch (error) {
+      console.error("Error getting screen share", error);
+    }
+  };
+  useEffect(() => {
+    if (isScreenShareOn) {
+      getScreenStream();
+    } else {
+      getLocalVideoStream();
+    }
+  }, [setIsScreenShareOn, isScreenShareOn]);
 
   const startCalling = async (socketID) => {
     console.log("Starting call to:", socketID);
@@ -145,6 +169,7 @@ const VideoGrid = () => {
         // data: contains the signal data to send
         console.log(data);
         console.log("Signaling to peer:", socketID);
+        setCallerID(socketID);
         socket.emit("callUser", {
           userToCall: socketID,
           signalData: data,
@@ -240,17 +265,18 @@ const VideoGrid = () => {
 
   const handlePeerError = (err) => {
     console.error("Peer connection error:", err);
-    endCall(peerRef, setIsInCall, setCallerID, remoteVideo);
+    endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
   };
 
+  const handleEndCall = () => {
+    endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
+  };
 
   const handleCall = () => {
     if (callerID && !isInCall) {
       startCalling(callerID);
     }
   };
-
-
 
   const handleRequestUsers = () => {
     socket.emit("getAllConnectedUsers", { room_id: roomID });
@@ -327,7 +353,7 @@ const VideoGrid = () => {
       </div>
       {isInCall && (
         <button
-          onClick={endCall}
+          onClick={handleEndCall}
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
         >
           End Call

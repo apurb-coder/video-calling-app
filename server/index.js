@@ -98,6 +98,13 @@ io.on("connection", (socket) => {
   socket.emit("YourSocketId", { socketID: socket.id });
   console.log(`Connected User:${socket.id}`);
 
+  // Listen for the "callEnded" event from a participant
+  socket.on("callEnded", ({ to }) => {
+    console.log(`Call ended by ${socket.id}, notifying ${to}`);
+
+    // Emit the "callEnded" event to the other participant
+    io.to(to).emit("callEnded");
+  });
   socket.on("leaveRoom", ({ username, room_id }) => {
     console.log(`User Disconnected:${socket.id}`);
 
@@ -139,15 +146,13 @@ io.on("connection", (socket) => {
       );
       if (socketIndex !== -1)
         Rooms[roomId].Active_user_socketIDs.splice(socketIndex, 1);
-
-      
     }
 
     // emitUpdatedUserList(socket.id, roomId); // Update other users in the room
     socket.broadcast
       .to(roomId)
       .emit("user-left-meeting", { username: Users[socket.id]?.username });
-     delete Users[socket.id];
+    delete Users[socket.id];
   });
   // Create a new Room
   // Functioning: emit an event createRoom from client side -> server is listening to createRoom event and it creates a room , make the user join the room -> emit user-joined-meet to inform client, user joined meet sucessfully
@@ -257,8 +262,6 @@ io.on("connection", (socket) => {
 
     socket.emit("AllConnectedUsers", { users, yourSocketID: socket.id });
   });
-
-
 
   // simple-peer signal forwarding
   socket.on("callUser", ({ userToCall, signalData }) => {
