@@ -269,6 +269,7 @@ const VideoGrid = () => {
   };
 
   const handleEndCall = () => {
+    location.reload();
     endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
   };
 
