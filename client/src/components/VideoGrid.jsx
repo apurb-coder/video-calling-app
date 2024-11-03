@@ -121,6 +121,17 @@ const VideoGrid = () => {
       getLocalVideoStream();
     }
   }, [setIsScreenShareOn, isScreenShareOn]);
+  useEffect(() => {
+    if (peerRef.current && myVideoStream) {
+      const [videoTrack] = myVideoStream.getVideoTracks();
+      const sender = peerRef.current._pc
+        .getSenders()
+        .find((s) => s.track.kind === videoTrack.kind);
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    }
+  }, [myVideoStream, isScreenShareOn]);
 
   const startCalling = async (socketID) => {
     console.log("Starting call to:", socketID);
