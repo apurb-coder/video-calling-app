@@ -108,47 +108,47 @@ export const SocketProvider = ({ children }) => {
       });
     };
 
-    // Function to switch back to camera stream when screen sharing stops
-    const switchToCameraStream = () => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          if (window.localStream) {
-            window.localStream.getTracks().forEach((track) => track.stop()); // Stop previous tracks
-          }
-          window.localStream = stream;
-          peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
-          socket.on("user-joined-meeting", handleUserJoinedMeeting);
-          setIsScreenShareOn(false); // Update state to indicate screen sharing is off
-        })
-        .catch((error) =>
-          console.error("Error accessing media devices:", error)
-        );
-    };
+    // // Function to switch back to camera stream when screen sharing stops
+    // const switchToCameraStream = () => {
+    //   navigator.mediaDevices
+    //     .getUserMedia({ video: true, audio: true })
+    //     .then((stream) => {
+    //       if (window.localStream) {
+    //         window.localStream.getTracks().forEach((track) => track.stop()); // Stop previous tracks
+    //       }
+    //       window.localStream = stream;
+    //       peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
+    //       socket.on("user-joined-meeting", handleUserJoinedMeeting);
+    //       setIsScreenShareOn(false); // Update state to indicate screen sharing is off
+    //     })
+    //     .catch((error) =>
+    //       console.error("Error accessing media devices:", error)
+    //     );
+    // };
 
-    // Switch between screen sharing and camera video/audio streaming
-    if (isScreenShareOn) {
-      // when screen sharing is on, share the screen
-      navigator.mediaDevices
-        .getDisplayMedia({ video: true, audio: true })
-        .then((stream) => {
-          if (window.localStream) {
-            window.localStream.getTracks().forEach((track) => track.stop()); // stop previous tracks
-          }
-          window.localStream = stream;
-          setScreenShareStream(stream);
-          // event Listener for when the screen sharing stream ends
-          stream.getTracks()[0].addEventListener("ended", switchToCameraStream);
-          peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
-          socket.on("user-joined-meeting", handleUserJoinedMeeting);
-        })
-        .catch((error) =>
-          console.error("Error accessing display media:", error)
-        );
-    } else {
-      // when screen sharing is off share the camera
-      switchToCameraStream();
-    }
+    // // Switch between screen sharing and camera video/audio streaming
+    // if (isScreenShareOn) {
+    //   // when screen sharing is on, share the screen
+    //   navigator.mediaDevices
+    //     .getDisplayMedia({ video: true, audio: true })
+    //     .then((stream) => {
+    //       if (window.localStream) {
+    //         window.localStream.getTracks().forEach((track) => track.stop()); // stop previous tracks
+    //       }
+    //       window.localStream = stream;
+    //       setScreenShareStream(stream);
+    //       // event Listener for when the screen sharing stream ends
+    //       stream.getTracks()[0].addEventListener("ended", switchToCameraStream);
+    //       peer.on("call", handleIncomingCall); // 1st add "CALL" event listener then invoke CALL event
+    //       socket.on("user-joined-meeting", handleUserJoinedMeeting);
+    //     })
+    //     .catch((error) =>
+    //       console.error("Error accessing display media:", error)
+    //     );
+    // } else {
+    //   // when screen sharing is off share the camera
+    //   switchToCameraStream();
+    // }
 
     // Cleanup function to remove event listeners
     return () => {

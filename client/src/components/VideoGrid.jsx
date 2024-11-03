@@ -19,7 +19,7 @@ export const endCall = (peerRef, setIsInCall, setCallerID, remoteVideo) => {
 
 const VideoGrid = () => {
   const { roomID, username, setMyPeerID } = useAppContext();
-  const { socket } = useSocket();
+  const { socket, setIsScreenShareOn, isScreenShareOn } = useSocket();
 
   //----------------simple-peer implementation----------------
   const [mySocketID, setMySocketID] = useState("");
@@ -60,24 +60,43 @@ const VideoGrid = () => {
     };
   }, [socket]);
 
+   const getLocalVideoStream = async () => {
+     try {
+       const stream = await navigator.mediaDevices.getUserMedia({
+         video: true,
+         audio: true,
+       });
+       setMyVideoStream(stream);
+       window.localStream = stream;
+       if (localVideo.current) {
+         localVideo.current.srcObject = stream;
+       }
+     } catch (error) {
+       console.error("Error getting user media", error);
+     }
+   };
+   const getScreenStream = async () => {
+     try {
+       const screenStream = await navigator.mediaDevices.getDisplayMedia({
+         video: true,
+         audio: true,
+       });
+       setMyVideoStream(screenStream);
+       window.localStream = screenStream;
+       if (localVideo.current) {
+         localVideo.current.srcObject = screenStream;
+       }
+     } catch (error) {
+       console.error("Error getting screen share", error);
+     }
+   };
   useEffect(() => {
-    const getLocalVideoStream = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-        setMyVideoStream(stream);
-        window.localStream = stream;
-        if (localVideo.current) {
-          localVideo.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error("Error getting user media", error);
-      }
-    };
-    getLocalVideoStream();
-  }, []);
+     if (isScreenShareOn) {
+       getScreenStream();
+     } else {
+       getLocalVideoStream();
+     }
+  }, [setIsScreenShareOn,isScreenShareOn]);
 
   const startCalling = async (socketID) => {
     console.log("Starting call to:", socketID);
@@ -231,16 +250,7 @@ const VideoGrid = () => {
     }
   };
 
-  const endCall = () => {
-    if (peerRef.current) {
-      peerRef.current.destroy();
-    }
-    setIsInCall(false);
-    setCallerID("");
-    if (remoteVideo.current) {
-      remoteVideo.current.srcObject = null;
-    }
-  };
+
 
   const handleRequestUsers = () => {
     socket.emit("getAllConnectedUsers", { room_id: roomID });
