@@ -28,15 +28,17 @@ export const endCall = (
 };
 
 const VideoGrid = () => {
-  const { roomID, username, setMyPeerID } = useAppContext();
-  const { socket, setIsScreenShareOn, isScreenShareOn } = useSocket();
+  const { roomID, username, setMyPeerID, isInCall, setIsInCall } =
+    useAppContext();
+  const { socket, setIsScreenShareOn, isScreenShareOn } =
+    useSocket();
 
   //----------------simple-peer implementation----------------
   const [mySocketID, setMySocketID] = useState("");
   const [callerID, setCallerID] = useState("");
   const [myVideoStream, setMyVideoStream] = useState(null);
   const [connectedUsers, setConnectedUsers] = useState([]);
-  const [isInCall, setIsInCall] = useState(false);
+  // const [isInCall, setIsInCall] = useState(false);
   const localVideo = useRef(null);
   const remoteVideo = useRef(null);
   const peerRef = useRef(null);

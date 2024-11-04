@@ -20,6 +20,7 @@ export const AppContextProvider = ({ children }) => {
   const [myPeerID, setMyPeerID] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState("");
   const [activeParticipants, setActiveParticipants] = useState([]);
+  const [isInCall, setIsInCall] = useState(false);
   useEffect(() => {
     const getOrdinal = (n) => {
       const s = ["th", "st", "nd", "rd"],
@@ -74,11 +75,14 @@ export const AppContextProvider = ({ children }) => {
         setTopic,
         currentTime,
         setCurrentTime,
-        myPeerID, setMyPeerID,
+        myPeerID,
+        setMyPeerID,
         currentDateTime,
         setCurrentDateTime,
         activeParticipants,
         setActiveParticipants,
+        isInCall,
+        setIsInCall,
       }}
     >
       {children}

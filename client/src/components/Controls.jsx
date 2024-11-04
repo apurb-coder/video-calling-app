@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useAppContext } from "../context/AppContext.jsx";
 import { useSocket } from "../context/SocketContext.jsx";
 import { FaDownload } from "react-icons/fa6";
 import microPhoneIcon from "../assets/microphone-2.svg";
