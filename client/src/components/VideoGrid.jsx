@@ -28,20 +28,29 @@ export const endCall = (
 };
 
 const VideoGrid = () => {
-  const { roomID, username, setMyPeerID, isInCall, setIsInCall } =
-    useAppContext();
+  const {
+    roomID,
+    username,
+    setMyPeerID,
+    isInCall,
+    setIsInCall,
+    callerID,
+    setCallerID,
+    peerRef,
+    remoteVideo,
+  } = useAppContext();
   const { socket, setIsScreenShareOn, isScreenShareOn } =
     useSocket();
 
   //----------------simple-peer implementation----------------
   const [mySocketID, setMySocketID] = useState("");
-  const [callerID, setCallerID] = useState("");
+  // const [callerID, setCallerID] = useState("");
   const [myVideoStream, setMyVideoStream] = useState(null);
   const [connectedUsers, setConnectedUsers] = useState([]);
   // const [isInCall, setIsInCall] = useState(false);
   const localVideo = useRef(null);
-  const remoteVideo = useRef(null);
-  const peerRef = useRef(null);
+  // const remoteVideo = useRef(null);
+  // const peerRef = useRef(null);
 
   useEffect(() => {
     if (!socket) {
@@ -281,10 +290,10 @@ const VideoGrid = () => {
     endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
   };
 
-  const handleEndCall = () => {
-    location.reload();
-    endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
-  };
+  // const handleEndCall = () => {
+  //   location.reload();
+  //   endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
+  // };
 
   const handleCall = () => {
     if (callerID && !isInCall) {
@@ -365,14 +374,14 @@ const VideoGrid = () => {
           Call User
         </button>
       </div>
-      {isInCall && (
+      {/* {isInCall && (
         <button
           onClick={handleEndCall}
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
         >
           End Call
         </button>
-      )}
+      )} */}
     </div>
   );
 };

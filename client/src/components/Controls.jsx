@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useAppContext } from "../context/AppContext.jsx";
+import { endCall } from "./VideoGrid.jsx";
 import { useSocket } from "../context/SocketContext.jsx";
 import { FaDownload } from "react-icons/fa6";
 import microPhoneIcon from "../assets/microphone-2.svg";
@@ -8,13 +9,14 @@ import screenShareIcon from "../assets/send-square.svg";
 import recordMeetIcon from "../assets/Group 33.svg";
 
 const Controls = () => {
-  const { setIsScreenShareOn } = useSocket();
+  const { socket, setIsScreenShareOn } = useSocket();
 
   // For Screen Recording
   const [doneRecording, setDoneRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const mediaRecorderRef = useRef(null);
-
+  const { peerRef, setIsInCall, setCallerID, callerID, remoteVideo } =
+    useAppContext();
   // Start Screen Recording
   const startRecording = async () => {
     // clean any previously recorded chunks
@@ -54,6 +56,10 @@ const Controls = () => {
       startRecording();
     }
   };
+  const handleEndCall = () => {
+    location.reload();
+    endCall(peerRef, setIsInCall, setCallerID, callerID, remoteVideo, socket);
+  };
   return (
     <div className="flex flex-col h-[15%] items-center justify-center fixed bottom-0 left-0 right-[26.3125rem]">
       <div className="flex relative w-full items-center justify-center">
@@ -91,7 +97,10 @@ const Controls = () => {
           </div>
         </div>
         {/* End Call */}
-        <div className=" absolute right-7 cursor-pointer">
+        <div
+          className=" absolute right-7 cursor-pointer"
+          onClick={handleEndCall}
+        >
           <div className="bg-red-500 text-white py-2 px-5 rounded-full">
             End Call
           </div>

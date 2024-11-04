@@ -1,5 +1,5 @@
 // Function: This file handles all states for the app. This file provides access of all states globally.
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 
 const AppContext = createContext(null);
 
@@ -21,6 +21,9 @@ export const AppContextProvider = ({ children }) => {
   const [currentDateTime, setCurrentDateTime] = useState("");
   const [activeParticipants, setActiveParticipants] = useState([]);
   const [isInCall, setIsInCall] = useState(false);
+  const remoteVideo = useRef(null);
+  const peerRef = useRef(null);
+  const [callerID, setCallerID] = useState("");
   useEffect(() => {
     const getOrdinal = (n) => {
       const s = ["th", "st", "nd", "rd"],
@@ -52,14 +55,14 @@ export const AppContextProvider = ({ children }) => {
     };
   }, []);
   // whenever there is change in session storage , getItem from session storage
-  useEffect(()=>{
-    const storedRoomID=sessionStorage.getItem("roomID");
-    const storedUsername=sessionStorage.getItem("username");
-    const storedTopic= sessionStorage.getItem("topic");
-    if(storedRoomID) setRoomID(storedRoomID);
-    if(storedUsername) setUsername(storedUsername);
-    if(storedTopic) setTopic(storedTopic);
-  },[sessionStorage])
+  useEffect(() => {
+    const storedRoomID = sessionStorage.getItem("roomID");
+    const storedUsername = sessionStorage.getItem("username");
+    const storedTopic = sessionStorage.getItem("topic");
+    if (storedRoomID) setRoomID(storedRoomID);
+    if (storedUsername) setUsername(storedUsername);
+    if (storedTopic) setTopic(storedTopic);
+  }, [sessionStorage]);
   // Function : fetch Active Participants list
   const fetchActivePaticipants = () => {
     //Implement the logic to fetch active participants based on roomID
@@ -83,6 +86,10 @@ export const AppContextProvider = ({ children }) => {
         setActiveParticipants,
         isInCall,
         setIsInCall,
+        callerID,
+        setCallerID,
+        peerRef,
+        remoteVideo,
       }}
     >
       {children}
