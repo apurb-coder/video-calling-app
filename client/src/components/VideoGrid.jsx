@@ -322,7 +322,7 @@ const VideoGrid = () => {
       {/* <h2 className="mb-6">Video Call demo using simple-peer</h2> */}
       <div className="flex space-x-7 justify-center items-center">
         <div className="flex flex-col justify-center items-center">
-          <p className="font-bold mb-5">My Video</p>
+          <p className="font-bold mb-5">You</p>
           <div className="aspect-video w-[25rem] h-auto">
             <video
               id="localVideo"
