@@ -51,6 +51,7 @@ const VideoGrid = () => {
   const localVideo = useRef(null);
   // const remoteVideo = useRef(null);
   // const peerRef = useRef(null);
+  const [username_var, setUsername_var] = useState("Remote Video");
 
   useEffect(() => {
     if (!socket) {
@@ -311,69 +312,80 @@ const VideoGrid = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleClick=(socketID, username)=>{
+    setCallerID(socketID);
+    setUsername_var(username);
+  }
+
   return (
     <div className="flex flex-col justify-center items-center h-screen w-screen text-blue-500">
-      <h2 className="mb-6">Video Call demo using simple-peer</h2>
+      {/* <h2 className="mb-6">Video Call demo using simple-peer</h2> */}
       <div className="flex space-x-4">
         <div className="flex flex-col justify-center items-center">
-          <p>My Video</p>
+          <p className="font-bold mb-5">My Video</p>
           <video
             id="localVideo"
             autoPlay
             playsInline
             muted
             ref={localVideo}
-            className="w-80 h-60 bg-gray-200"
+            className="w-80 h-60 bg-gray-200 rounded-2xl"
           />
         </div>
-        <div className="flex flex-col justify-center items-center">
-          <p>Remote Video</p>
-          <video
-            id="remoteVideo"
-            autoPlay
-            playsInline
-            muted
-            ref={remoteVideo}
-            className="w-80 h-60 bg-gray-200"
-          />
-        </div>
+        {isInCall && (
+          <div className="flex flex-col justify-center items-center">
+            <p className="font-bold mb-5">{username_var}</p>
+            <video
+              id="remoteVideo"
+              autoPlay
+              playsInline
+              muted
+              ref={remoteVideo}
+              className="w-80 h-60 bg-gray-200 rounded-2xl"
+            />
+          </div>
+        )}
       </div>
-      <div className="mt-4">
-        <h3>Connected Users:</h3>
-        <ul>
-          {Object.entries(connectedUsers).map(([socketID, username]) => (
-            <li
-              key={socketID}
-              className="flex items-center justify-between mb-2"
-            >
-              <span>{username}</span>
-              <button
-                onClick={() => setCallerID(socketID)}
-                className="bg-blue-500 text-white px-2 py-1 rounded"
-                disabled={isInCall}
+      {isInCall || (
+        <div className="mt-4">
+          <h3>Connected Users:</h3>
+          <ul>
+            {Object.entries(connectedUsers).map(([socketID, username]) => (
+              <li
+                key={socketID}
+                className="flex items-center justify-between mb-2"
               >
-                Select
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-4">
-        <input
-          type="text"
-          value={callerID}
-          onChange={(e) => setCallerID(e.target.value)}
-          placeholder="Enter caller ID"
-          className="px-2 py-1 border rounded"
-        />
-        <button
-          onClick={handleCall}
-          className="ml-2 bg-green-500 text-white px-4 py-2 rounded"
-          disabled={isInCall || !callerID}
-        >
-          Call User
-        </button>
-      </div>
+                <span>{username}</span>
+                <button
+                  onClick={() => handleClick(socketID, username)}
+                  className="bg-blue-500 text-white px-2 py-1 rounded"
+                  disabled={isInCall}
+                >
+                  Select
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {isInCall || (
+        <div className="mt-4">
+          <input
+            type="text"
+            value={callerID}
+            onChange={(e) => setCallerID(e.target.value)}
+            placeholder="Enter caller ID"
+            className="px-2 py-1 border rounded"
+          />
+          <button
+            onClick={handleCall}
+            className="ml-2 bg-green-500 text-white px-4 py-2 rounded"
+            disabled={isInCall || !callerID}
+          >
+            Call User
+          </button>
+        </div>
+      )}
       {/* {isInCall && (
         <button
           onClick={handleEndCall}
