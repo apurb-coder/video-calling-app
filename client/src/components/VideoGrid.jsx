@@ -318,31 +318,35 @@ const VideoGrid = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen w-screen text-blue-500">
+    <div className="flex flex-col justify-center items-center h-[90%] w-[70%] text-blue-500">
       {/* <h2 className="mb-6">Video Call demo using simple-peer</h2> */}
-      <div className="flex space-x-4">
+      <div className="flex space-x-7 justify-center items-center">
         <div className="flex flex-col justify-center items-center">
           <p className="font-bold mb-5">My Video</p>
-          <video
-            id="localVideo"
-            autoPlay
-            playsInline
-            muted
-            ref={localVideo}
-            className="w-80 h-60 bg-gray-200 rounded-2xl"
-          />
+          <div className="aspect-video w-[25rem] h-auto">
+            <video
+              id="localVideo"
+              autoPlay
+              playsInline
+              muted
+              ref={localVideo}
+              className="w-full h-full object-cover bg-gray-200 rounded-2xl"
+            />
+          </div>
         </div>
         {isInCall && (
           <div className="flex flex-col justify-center items-center">
             <p className="font-bold mb-5">{username_var}</p>
-            <video
-              id="remoteVideo"
-              autoPlay
-              playsInline
-              muted
-              ref={remoteVideo}
-              className="w-80 h-60 bg-gray-200 rounded-2xl"
-            />
+            <div className="aspect-video w-[25rem] h-auto">
+              <video
+                id="localVideo"
+                autoPlay
+                playsInline
+                muted
+                ref={remoteVideo}
+                className="w-full h-full object-cover bg-gray-200 rounded-2xl"
+              />
+            </div>
           </div>
         )}
       </div>
