@@ -221,7 +221,11 @@ const VideoGrid = () => {
     console.log("Incoming call from:", from);
     // Fetch media stream using getUserMedia
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+      video: {
+        width: { ideal: 720 },  // Set the desired width
+        height: { ideal: 1280 }, // Set the desired height
+        aspectRatio: 9 / 16,     // Maintains a 9:16 aspect ratio
+      },
       audio: true,
     });
     const peer = new Peer({
@@ -323,7 +327,7 @@ const VideoGrid = () => {
       <div className="flex space-x-7 justify-center items-center">
         <div className="flex flex-col justify-center items-center">
           <p className="font-bold mb-5">You</p>
-          <div className="aspect-video w-[25rem] h-auto">
+          <div className="aspect-video w-[25rem] h-72">
             <video
               id="localVideo"
               autoPlay
@@ -337,7 +341,7 @@ const VideoGrid = () => {
         {isInCall && (
           <div className="flex flex-col justify-center items-center">
             <p className="font-bold mb-5">{username_var}</p>
-            <div className="aspect-video w-[25rem] h-auto">
+            <div className="aspect-video w-[25rem] h-72">
               <video
                 id="localVideo"
                 autoPlay
