@@ -95,7 +95,7 @@ const VideoGrid = () => {
     return () => {
       socket.off("callEnded");
     };
-  }, [socket, peerRef, setIsInCall, setCallerID, remoteVideo]); 
+  }, [socket, peerRef, setIsInCall, setCallerID, remoteVideo]);
   const getLocalVideoStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({

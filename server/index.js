@@ -40,8 +40,8 @@ const Users = {};
 */
 const Rooms = {};
 // Create an HTTP server using the Express app
-// const server = https.createServer(sslOptions, app);
-const server = http.createServer(app);
+const server = https.createServer(sslOptions, app);
+// const server = http.createServer(app);
 // Create a Socket.IO server and attach it to the HTTP server
 const io = new Server(server, {
   cors: {
