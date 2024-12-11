@@ -65,17 +65,17 @@ const Controls = () => {
       <div className="flex relative w-full items-center justify-center">
         <div className="flex space-x-5">
           {/* Toggle on/off microPhone */}
-          <div className="bg-[#0060FF] p-2 rounded-full cursor-pointer">
+          {/* <div className="bg-[#0060FF] p-2 rounded-full cursor-pointer">
             <img
               src={microPhoneIcon}
               alt="microPhoneIcon"
               className="w-5 h-5"
             />
-          </div>
+          </div> */}
           {/* Toggle on/off video */}
-          <div className="bg-[#0060FF] p-2 rounded-full cursor-pointer">
+          {/* <div className="bg-[#0060FF] p-2 rounded-full cursor-pointer">
             <img src={videoIcon} alt="videoIcon" className="w-5 h-5" />
-          </div>
+          </div> */}
           {/* Share Screen */}
           <div
             className="bg-[#DFEBFF] p-2 rounded-full cursor-pointer"
